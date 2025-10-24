@@ -3,8 +3,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 from . import views
 
-#router = DefaultRouter()
-#router.register(r'users', views.UserViewSet, basename='user')
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet, basename='user')
 
 urlpatterns = [
     #path('', include(router.urls)),

@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Order, OrderItem
 from .serializers import OrderSerializer, OrderCreateSerializer
 
 class OrderViewSet(viewsets.ModelViewSet):
+    serializer_class = OrderSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status', 'customer']
     

@@ -10,6 +10,7 @@ from .models import Tenant, StoreSettings
 from .serializers import TenantSerializer, TenantCreateSerializer, TenantRegistrationSerializer,StoreSettingsSerializer
 import uuid
 
+
 User = get_user_model()
 
 class TenantViewSet(viewsets.ModelViewSet):

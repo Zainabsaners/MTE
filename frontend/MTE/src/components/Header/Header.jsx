@@ -222,7 +222,7 @@ const Header = () => {
       </style>
       <div style={containerStyle} className="header-container">
         <Link to="/" style={logoStyle}>
-          🛍️ MTE Commerce
+          🏪 MultiMart
         </Link>
         
         <nav style={navStyle} className="header-nav">

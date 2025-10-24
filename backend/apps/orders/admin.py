@@ -15,3 +15,8 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     list_select_related = ['tenant']
   
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['order', 'product', 'quantity', 'price']
+    list_filter = ['order__tenant']
+    list_select_related = ['order', 'product']  
