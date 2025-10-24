@@ -15,6 +15,7 @@ const VendorDashboard = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [selectedProductForCategory, setSelectedProductForCategory] = useState(null);
   const [availableCategories, setAvailableCategories] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(null);
   
   const navigate = useNavigate();
 
@@ -69,6 +70,7 @@ const VendorDashboard = () => {
   // Mock data for demonstration
   useEffect(() => {
     loadDashboardData();
+    loadAnalyticsData();
     debugProductOwnership();
   }, []);
 
@@ -97,6 +99,51 @@ const VendorDashboard = () => {
       console.error('Error loading dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadAnalyticsData = async () => {
+    try {
+      // Mock analytics data - in real app, fetch from API
+      const mockAnalytics = {
+        revenueTrends: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          data: [12000, 19000, 15000, 22000, 18000, 25000, 28000, 32000, 30000, 24500]
+        },
+        customerGrowth: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          data: [45, 52, 48, 65, 70, 75, 82, 88, 95, 102]
+        },
+        productPerformance: [
+          { name: 'Wireless Headphones', sales: 45, revenue: 13455 },
+          { name: 'Smartphone Case', sales: 32, revenue: 28768 },
+          { name: 'Gaming Mouse', sales: 28, revenue: 55972 },
+          { name: 'Summer Dress', sales: 25, revenue: 62475 },
+          { name: 'Running Shoes', sales: 18, revenue: 62982 }
+        ],
+        trafficSources: [
+          { source: 'Direct', visitors: 45, percentage: 45 },
+          { source: 'Social Media', visitors: 25, percentage: 25 },
+          { source: 'Search Engines', visitors: 20, percentage: 20 },
+          { source: 'Referrals', visitors: 10, percentage: 10 }
+        ],
+        monthlyStats: [
+          { month: 'January', revenue: 12000, orders: 8, customers: 45 },
+          { month: 'February', revenue: 19000, orders: 12, customers: 52 },
+          { month: 'March', revenue: 15000, orders: 10, customers: 48 },
+          { month: 'April', revenue: 22000, orders: 15, customers: 65 },
+          { month: 'May', revenue: 18000, orders: 11, customers: 70 },
+          { month: 'June', revenue: 25000, orders: 18, customers: 75 },
+          { month: 'July', revenue: 28000, orders: 20, customers: 82 },
+          { month: 'August', revenue: 32000, orders: 22, customers: 88 },
+          { month: 'September', revenue: 30000, orders: 21, customers: 95 },
+          { month: 'October', revenue: 24500, orders: 12, customers: 102 }
+        ]
+      };
+      
+      setAnalyticsData(mockAnalytics);
+    } catch (error) {
+      console.error('Error loading analytics data:', error);
     }
   };
 
@@ -151,6 +198,233 @@ const VendorDashboard = () => {
       
       ]);
   }
+  };
+
+  // Simple bar chart component
+  const BarChart = ({ data, labels, height = 200, color = '#3498db', title }) => {
+    const maxValue = Math.max(...data);
+    
+    return (
+      <div style={{ marginBottom: '0' }}>
+        {title && <h4 style={{ marginBottom: '1.5rem', color: '#2c3e50', textAlign: 'center' }}>{title}</h4>}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'end', 
+          height: `${height}px`, 
+          gap: '12px',
+          padding: '20px 0',
+          borderBottom: '1px solid #e9ecef',
+          justifyContent: 'space-between'
+        }}>
+          {data.map((value, index) => (
+            <div key={index} style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              flex: 1,
+              height: '100%'
+            }}>
+              <div style={{
+                background: `linear-gradient(to top, ${color}, ${color}dd)`,
+                height: `${(value / maxValue) * 80}%`,
+                width: '70%',
+                borderRadius: '4px 4px 0 0',
+                minHeight: '20px',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'end',
+                justifyContent: 'center'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontSize: '0.7rem',
+                  fontWeight: 'bold',
+                  marginBottom: '5px',
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                }}>
+                  KES {value.toLocaleString()}
+                </span>
+              </div>
+              <div style={{ 
+                fontSize: '0.8rem', 
+                color: '#6c757d', 
+                marginTop: '8px',
+                textAlign: 'center',
+                fontWeight: '600'
+              }}>
+                {labels[index]}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Simple line chart component
+  const LineChart = ({ data, labels, height = 200, color = '#e74c3c', title }) => {
+    const maxValue = Math.max(...data);
+    const points = data.map((value, index) => ({
+      x: (index / (data.length - 1)) * 100,
+      y: 100 - (value / maxValue) * 100
+    }));
+
+    const pathData = points.map((point, index) => 
+      `${index === 0 ? 'M' : 'L'} ${point.x}% ${point.y}%`
+    ).join(' ');
+
+    return (
+      <div style={{ marginBottom: '0' }}>
+        {title && <h4 style={{ marginBottom: '1.5rem', color: '#2c3e50', textAlign: 'center' }}>{title}</h4>}
+        <div style={{ 
+          position: 'relative', 
+          height: `${height}px`,
+          background: 'linear-gradient(to top, #f8f9fa, white)',
+          borderRadius: '8px',
+          padding: '20px',
+          border: '1px solid #e9ecef'
+        }}>
+          <svg width="100%" height="100%" style={{ overflow: 'visible' }}>
+            {/* Grid lines */}
+            {[0, 25, 50, 75, 100].map((percent) => (
+              <line
+                key={percent}
+                x1="0"
+                y1={`${percent}%`}
+                x2="100%"
+                y2={`${percent}%`}
+                stroke="#e9ecef"
+                strokeWidth="1"
+              />
+            ))}
+            
+            {/* Data line */}
+            <path
+              d={pathData}
+              fill="none"
+              stroke={color}
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            
+            {/* Data points */}
+            {points.map((point, index) => (
+              <circle
+                key={index}
+                cx={`${point.x}%`}
+                cy={`${point.y}%`}
+                r="6"
+                fill={color}
+                stroke="white"
+                strokeWidth="2"
+              />
+            ))}
+          </svg>
+          
+          {/* Labels */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            marginTop: '10px',
+            padding: '0 10px'
+          }}>
+            {labels.map((label, index) => (
+              <div key={index} style={{ 
+                fontSize: '0.8rem', 
+                color: '#6c757d',
+                textAlign: 'center',
+                flex: 1,
+                fontWeight: '600'
+              }}>
+                {label}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Pie chart component
+  const PieChart = ({ data, height = 200, title }) => {
+    const total = data.reduce((sum, item) => sum + item.percentage, 0);
+    let currentAngle = 0;
+    
+    const colors = ['#3498db', '#e74c3c', '#27ae60', '#f39c12', '#9b59b6', '#1abc9c'];
+
+    return (
+      <div style={{ marginBottom: '0' }}>
+        {title && <h4 style={{ marginBottom: '1.5rem', color: '#2c3e50', textAlign: 'center' }}>{title}</h4>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', width: `${height}px`, height: `${height}px` }}>
+            <svg width={height} height={height} viewBox="0 0 100 100">
+              {data.map((item, index) => {
+                const percentage = item.percentage;
+                const angle = (percentage / 100) * 360;
+                const largeArcFlag = angle > 180 ? 1 : 0;
+                
+                const x1 = 50 + 50 * Math.cos(currentAngle * Math.PI / 180);
+                const y1 = 50 + 50 * Math.sin(currentAngle * Math.PI / 180);
+                currentAngle += angle;
+                const x2 = 50 + 50 * Math.cos(currentAngle * Math.PI / 180);
+                const y2 = 50 + 50 * Math.sin(currentAngle * Math.PI / 180);
+
+                const pathData = [
+                  `M 50 50`,
+                  `L ${x1} ${y1}`,
+                  `A 50 50 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                  `Z`
+                ].join(' ');
+
+                return (
+                  <path
+                    key={index}
+                    d={pathData}
+                    fill={colors[index % colors.length]}
+                    stroke="white"
+                    strokeWidth="3"
+                  />
+                );
+              })}
+              
+            </svg>
+          </div>
+          
+          <div style={{ flex: 1 }}>
+            {data.map((item, index) => (
+              <div key={index} style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                marginBottom: '12px',
+                padding: '10px',
+                background: '#f8f9fa',
+                borderRadius: '8px',
+                border: '1px solid #e9ecef'
+              }}>
+                <div style={{
+                  width: '16px',
+                  height: '16px',
+                  background: colors[index % colors.length],
+                  borderRadius: '4px',
+                  marginRight: '12px'
+                }}></div>
+                <div style={{ flex: 1, fontSize: '0.9rem', fontWeight: '600' }}>
+                  {item.source}
+                </div>
+                <div style={{ 
+                  fontSize: '1rem', 
+                  fontWeight: 'bold',
+                  color: '#2c3e50'
+                }}>
+                  {item.percentage}%
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const handleCreateProduct = () => {
@@ -319,6 +593,157 @@ const VendorDashboard = () => {
     return `${baseUrl}${imageMap.default}`;
   };
 
+  // Analytics Tab - FIXED LAYOUT
+  const renderAnalytics = () => (
+    <div>
+      <h3>Store Analytics & Trends</h3>
+      
+      {!analyticsData ? (
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <LoadingSpinner />
+          <p style={{ color: '#6c757d', marginTop: '1rem' }}>Loading analytics data...</p>
+        </div>
+      ) : (
+        <>
+          {/* Revenue Trends - Full Width */}
+          <div style={cardStyle}>
+            <BarChart
+              title="Monthly Revenue Trends (KES)"
+              data={analyticsData.revenueTrends.data}
+              labels={analyticsData.revenueTrends.labels}
+              height={300}
+              color="#3498db"
+            />
+          </div>
+
+          {/* Two Column Layout for Charts */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            {/* Customer Growth */}
+            <div style={cardStyle}>
+              <LineChart
+                title="Customer Growth"
+                data={analyticsData.customerGrowth.data}
+                labels={analyticsData.customerGrowth.labels}
+                height={250}
+                color="#27ae60"
+              />
+            </div>
+
+            {/* Traffic Sources */}
+            <div style={cardStyle}>
+              <PieChart
+                title="Traffic Sources"
+                data={analyticsData.trafficSources}
+                height={250}
+              />
+            </div>
+          </div>
+
+          {/* Product Performance - Full Width */}
+          <div style={cardStyle}>
+            <h4 style={{ marginBottom: '1.5rem', color: '#2c3e50' }}>Top Performing Products</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              {analyticsData.productPerformance.map((product, index) => (
+                <div key={index} style={{
+                  padding: '1rem',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '8px',
+                  background: '#f8f9fa'
+                }}>
+                  <h5 style={{ margin: '0 0 0.5rem 0', color: '#2c3e50' }}>{product.name}</h5>
+                  <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>
+                    <div>Sales: <strong>{product.sales} units</strong></div>
+                    <div>Revenue: <strong>KES {product.revenue.toLocaleString()}</strong></div>
+                  </div>
+                  <div style={{
+                    marginTop: '0.5rem',
+                    background: '#e9ecef',
+                    borderRadius: '10px',
+                    height: '8px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      background: index === 0 ? '#27ae60' : 
+                                 index === 1 ? '#3498db' : 
+                                 index === 2 ? '#f39c12' : '#9b59b6',
+                      height: '100%',
+                      width: `${(product.revenue / analyticsData.productPerformance[0].revenue) * 100}%`,
+                      borderRadius: '10px'
+                    }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Monthly Statistics - Full Width */}
+          <div style={cardStyle}>
+            <h4 style={{ marginBottom: '1.5rem', color: '#2c3e50' }}>Monthly Performance Summary</h4>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #e9ecef' }}>
+                    <th style={{ textAlign: 'left', padding: '12px', background: '#f8f9fa' }}>Month</th>
+                    <th style={{ textAlign: 'left', padding: '12px', background: '#f8f9fa' }}>Revenue</th>
+                    <th style={{ textAlign: 'left', padding: '12px', background: '#f8f9fa' }}>Orders</th>
+                    <th style={{ textAlign: 'left', padding: '12px', background: '#f8f9fa' }}>Customers</th>
+                    <th style={{ textAlign: 'left', padding: '12px', background: '#f8f9fa' }}>Avg. Order Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analyticsData.monthlyStats.map((stat, index) => (
+                    <tr key={index} style={{ borderBottom: '1px solid #e9ecef' }}>
+                      <td style={{ padding: '12px', fontWeight: '600' }}>{stat.month}</td>
+                      <td style={{ padding: '12px', color: '#27ae60', fontWeight: '600' }}>
+                        KES {stat.revenue.toLocaleString()}
+                      </td>
+                      <td style={{ padding: '12px' }}>{stat.orders}</td>
+                      <td style={{ padding: '12px' }}>{stat.customers}</td>
+                      <td style={{ padding: '12px', fontWeight: '600' }}>
+                        KES {Math.round(stat.revenue / stat.orders).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Key Metrics Summary */}
+          <div style={cardStyle}>
+            <h4 style={{ marginBottom: '1.5rem', color: '#2c3e50' }}>Performance Summary</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <div style={{ textAlign: 'center', padding: '1rem', background: '#e8f5e8', borderRadius: '8px' }}>
+                <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>Total Revenue</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#27ae60' }}>
+                  KES {analyticsData.revenueTrends.data.reduce((a, b) => a + b, 0).toLocaleString()}
+                </div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '1rem', background: '#e3f2fd', borderRadius: '8px' }}>
+                <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>Total Customers</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3498db' }}>
+                  {analyticsData.customerGrowth.data[analyticsData.customerGrowth.data.length - 1]}
+                </div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '1rem', background: '#fff3e0', borderRadius: '8px' }}>
+                <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>Total Orders</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f39c12' }}>
+                  {analyticsData.monthlyStats.reduce((sum, stat) => sum + stat.orders, 0)}
+                </div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '1rem', background: '#f3e5f5', borderRadius: '8px' }}>
+                <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>Avg. Monthly Growth</div>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#9b59b6' }}>
+                  +{Math.round(((analyticsData.revenueTrends.data[analyticsData.revenueTrends.data.length - 1] / analyticsData.revenueTrends.data[0]) - 1) * 100)}%
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+
   // Overview Tab
   const renderOverview = () => (
     <div>
@@ -352,6 +777,19 @@ const VendorDashboard = () => {
           </p>
         </div>
       </div>
+
+      {/* Quick Analytics Preview */}
+      {analyticsData && (
+        <div style={cardStyle}>
+          <h4>Revenue Trend (Last 6 Months)</h4>
+          <BarChart
+            data={analyticsData.revenueTrends.data.slice(-6)}
+            labels={analyticsData.revenueTrends.labels.slice(-6)}
+            height={150}
+            color="#3498db"
+          />
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
         <div style={cardStyle}>
@@ -930,6 +1368,12 @@ const VendorDashboard = () => {
           Orders
         </button>
         <button 
+          style={activeTab === 'analytics' ? activeTabStyle : tabButtonStyle}
+          onClick={() => setActiveTab('analytics')}
+        >
+          Analytics
+        </button>
+        <button 
           style={activeTab === 'settings' ? activeTabStyle : tabButtonStyle}
           onClick={() => navigate('/settings')}
         >
@@ -954,6 +1398,7 @@ const VendorDashboard = () => {
           {activeTab === 'overview' && renderOverview()}
           {activeTab === 'products' && renderProducts()}
           {activeTab === 'orders' && renderOrders()}
+          {activeTab === 'analytics' && renderAnalytics()}
           {/* Settings tab content removed - it now navigates to /settings */}
         </>
       )}
