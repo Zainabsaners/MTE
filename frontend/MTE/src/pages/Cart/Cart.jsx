@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import PaymentOptions from '../../components/Payment/PaymentOptions';
+import Checkout from '../../components/Checkout/Checkout';
 
 const Cart = () => {
   const { 
     items, 
+    subtotal,
+    shippingCost,
     total, 
     itemCount, 
     updateQuantity, 
@@ -16,9 +18,8 @@ const Cart = () => {
   
   const navigate = useNavigate();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  // Reusable styles
   const containerStyle = {
     maxWidth: '1200px',
     margin: '0 auto',
@@ -71,20 +72,16 @@ const Cart = () => {
     try {
       updateQuantity(productId, newQuantity);
     } catch (error) {
-      alert(error.message);
+      console.error('Quantity update error:', error);
     }
   };
 
-  const handleRemoveItem = (productId, productName) => {
-    if (window.confirm(`Remove ${productName} from cart?`)) {
-      removeFromCart(productId);
-    }
+  const handleRemoveItem = (productId) => {
+    removeFromCart(productId);
   };
 
   const handleClearCart = () => {
-    if (window.confirm('Clear all items from cart?')) {
-      clearCart();
-    }
+    clearCart();
   };
 
   const handleCheckout = async () => {
@@ -92,19 +89,18 @@ const Cart = () => {
     
     setIsCheckingOut(true);
 
-    try{
-      // This will trigger payment component to show
-      setShowPayment(true);
+    try {
+      setShowCheckout(true);
     } catch (error) {
-      alert(error.message);
-    } finally{
+      console.error('Checkout error:', error);
+    } finally {
       setIsCheckingOut(false);
     }
   };
 
-  // If showing payment component, render it
-  if (showPayment) {
-    return <PaymentOptions onBack={() => setShowPayment(false)} />;
+  // If showing checkout component, render it
+  if (showCheckout) {
+    return <Checkout onBack={() => setShowCheckout(false)} />;
   }
 
   if (items.length === 0) {
@@ -250,15 +246,54 @@ const Cart = () => {
               Order Summary
             </h2>
 
+            {/* Free Shipping Notice */}
+            {subtotal < 1999 && (
+              <div style={{
+                padding: '1rem',
+                background: '#e8f5e8',
+                border: '1px solid #4caf50',
+                borderRadius: '8px',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+              }}>
+                <div style={{ fontWeight: '600', color: '#2e7d32', marginBottom: '0.25rem' }}>
+                  🚚 Free Shipping Available!
+                </div>
+                <div style={{ fontSize: '0.9rem', color: '#388e3c' }}>
+                  Add {formatPrice(1999 - subtotal)} more to get free shipping
+                </div>
+              </div>
+            )}
+
+            {subtotal >= 1999 && (
+              <div style={{
+                padding: '1rem',
+                background: '#4caf50',
+                color: 'white',
+                borderRadius: '8px',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+                fontWeight: '600',
+              }}>
+                🎉 You qualify for FREE shipping!
+              </div>
+            )}
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ color: '#7f8c8d' }}>Items ({itemCount}):</span>
-                <span style={{ fontWeight: 600, color: '#2c3e50' }}>{formatPrice(total)}</span>
+                <span style={{ fontWeight: 600, color: '#2c3e50' }}>{formatPrice(subtotal)}</span>
               </div>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ color: '#7f8c8d' }}>Shipping:</span>
-                <span style={{ fontWeight: 600, color: '#2c3e50' }}>Free</span>
+                <span style={{ 
+                  fontWeight: 600, 
+                  color: shippingCost > 0 ? '#2c3e50' : '#27ae60',
+                  textDecoration: shippingCost === 0 ? 'line-through' : 'none'
+                }}>
+                  {shippingCost > 0 ? formatPrice(shippingCost) : 'Free'}
+                </span>
               </div>
               
               <div style={{ 
@@ -305,7 +340,7 @@ const Cart = () => {
               fontSize: '0.9rem',
               color: '#7f8c8d',
             }}>
-              Secure checkout with MPesa
+              {shippingCost === 0 ? '🎉 Free shipping applied!' : 'Standard delivery within 2-3 days'}
             </div>
 
             <div style={{ 
@@ -332,7 +367,7 @@ const Cart = () => {
   );
 };
 
-// Cart Item Component with proper image handling
+// Cart Item Component
 const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
   const quantityStyle = {
     display: 'flex',
@@ -364,9 +399,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
     fontWeight: '600',
   };
 
-  // Helper function to get product image
   const getProductImage = () => {
-    // Check multiple possible image sources
     const imageSources = [
       item.product?.image,
       item.image,
@@ -416,7 +449,6 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
               objectFit: 'cover',
             }}
             onError={(e) => {
-              // If image fails to load, show fallback
               console.warn(`Image failed to load: ${productImage}`);
               e.target.style.display = 'none';
               const fallback = document.createElement('div');
@@ -431,9 +463,6 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
               `;
               fallback.textContent = fallbackImage;
               e.target.parentNode.appendChild(fallback);
-            }}
-            onLoad={(e) => {
-              console.log(`Cart image loaded successfully: ${productImage}`);
             }}
           />
         ) : (
@@ -462,8 +491,9 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
             </h3>
             <p style={{ 
               fontSize: '0.9rem', 
-              color: '#7f8c8d',
+              color: '#3498db',
               marginBottom: '0.5rem',
+              fontWeight: '500',
             }}>
               Vendor: {item.vendor}
             </p>
@@ -530,7 +560,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
           </div>
 
           <button
-            onClick={() => onRemove(item.id, item.product.name)}
+            onClick={() => onRemove(item.id)}
             style={{
               background: 'none',
               border: 'none',

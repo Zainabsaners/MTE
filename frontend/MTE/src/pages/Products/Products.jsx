@@ -611,7 +611,7 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     if (product.stock_quantity > 0) {
       addToCart(product, 1);
-      alert(`Added ${product.name} to cart!`);
+     // alert(`Added ${product.name} to cart!`);
     }
   };
 

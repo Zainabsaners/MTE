@@ -92,7 +92,14 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = UserSerializer(request.user)
             return Response(serializer.data)
         return Response({'error': 'Not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-
+    # Add this to your UserViewSet class
+    @action(detail=False, methods=['get'], url_path='me')
+    def current_user(self, request):
+        """Get current user profile - alternative endpoint"""
+        if request.user.is_authenticated:
+           serializer = UserSerializer(request.user)
+           return Response(serializer.data)
+        return Response({'error': 'Not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 # Add a separate simple registration view for testing
 class SimpleRegisterView(APIView):

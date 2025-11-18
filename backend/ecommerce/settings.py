@@ -14,8 +14,19 @@ import os
 from pathlib import Path
 from decouple import config
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Cloudinary configuration (ADD THIS)
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'Root'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '584391927331488'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'XQN4nXNzoJsT1ypfw9KU6M7jgEQ'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Quick-start development settings - unsuitable for production
@@ -46,6 +57,8 @@ INSTALLED_APPS = [
     'django_filters',
     'django_celery_beat',
     #'django_daraja',
+    'cloudinary',
+    'cloudinary_storage',
     'apps.tenants',
     'apps.users',
     'apps.products',
@@ -59,6 +72,11 @@ MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET','')
 MPESA_SHORTCODE = config('MPESA_SHORTCODE','')
 MPESA_PASSKEY = config('MPESA_PASSKEY','')
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL','http://localhost:8000/api/payments/callback/')
+
+MPESA_BASE_URL = config(
+    'MPESA_BASE_URL',
+    default=('https://sandbox.safaricom.co.ke' if config('MPESA_ENVIRONMENT', default='sandbox') == 'sandbox' else 'https://api.safaricom.co.ke')
+)
 
 #DARAJAAUTH ={
  #   'CONSUMER_KEY': MPESA_CONSUMER_KEY,
@@ -241,3 +259,12 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to my project Admin",  # Login page text
     "copyright": "zainab © 2025",   
 }
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('Root'),
+    'API_KEY': os.environ.get('584391927331488'),
+    'API_SECRET': os.environ.get('XQN4nXNzoJsT1ypfw9KU6M7jgEQ'),
+}
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -10,6 +10,18 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['status', 'customer']
+
+    def get_permissions(self):
+        """
+        Allow any authenticated user to create orders
+        """
+        if self.action == 'create':
+            permission_classes = [permissions.IsAuthenticated]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
+    
+
     
     def get_serializer_class(self):
         if self.action == 'create':
@@ -24,7 +36,9 @@ class OrderViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         if hasattr(self.request, 'tenant') and self.request.tenant:
-            serializer.save(tenant=self.request.tenant)
+            serializer.save(tenant=self.request.tenant, customer=self.request.user)
+        else:
+            serializer.save(customer=self.request.user)
     
     @action(detail=True, methods=['post'])
     def update_status(self, request, pk=None):
