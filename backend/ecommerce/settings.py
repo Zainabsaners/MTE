@@ -1,19 +1,22 @@
 """
-Django settings for ecommerce project.
+Django settings for ecommerce project - PRODUCTION READY
 """
 
 import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
+# Generate secure secret key for production
+import secrets
+SECRET_KEY = config('SECRET_KEY', default=secrets.token_urlsafe(50))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-SECRET_KEY = 'django-insecure-vq6o=0sst@kupt5)84ay4k=n%4=sp@89$6!%c9tzg(r_k8q$h^'
-DEBUG = True
-ALLOWED_HOSTS = []
+# Security - will be overridden in production
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-development-key-change-in-production')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,.onrender.com').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -64,37 +67,50 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
+
+# TEMPLATES Configuration
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-# Database Configuration - FIXED
-DATABASE_URL = os.environ.get('DATABASE_URL')
+# Database Configuration - PRODUCTION READY
+DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
-    # Production - Use Railway MySQL
+    # PRODUCTION - Use Railway MySQL
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)
     }
+    print(f"✅ Using Production Database: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else DATABASE_URL[:50]}...")
 else:
-    # Development - Local MySQL (REMOVED the duplicate DATABASES block)
+    # FALLBACK - Use SQLite for local testing only
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'multi_tenant_ecommerce',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': '3306',
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            }
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    print("⚠️ Using SQLite (for local testing only)")
 
-# Cloudinary configuration - FIXED (Remove hardcoded credentials!)
+# Cloudinary configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),  # Empty default for security
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': config('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': config('CLOUDINARY_API_SECRET', ''),
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -157,46 +173,28 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-# CORS Settings
+# CORS Settings for Production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://your-frontend-domain.vercel.app",  # Add your Vercel domain later
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5173", 
+    "https://your-backend-domain.onrender.com",  # Add your Render domain later
 ]
 
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_SECURE = False
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True  # Only for development
-
-CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-]
 
 # Jazzmin Settings
 JAZZMIN_SETTINGS = {
@@ -206,5 +204,3 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to my project Admin",
     "copyright": "zainab © 2025",
 }
-
-# Remove the duplicate Cloudinary configuration at the bottom
