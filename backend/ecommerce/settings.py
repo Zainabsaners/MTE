@@ -177,13 +177,15 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://your-frontend-domain.vercel.app",  # Add your Vercel domain later
+    "https://ecommerce-frontend-nine-lemon.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173", 
-    "https://your-backend-domain.onrender.com",  # Add your Render domain later
+    "https://ecommerce-backend-xz2q.onrender.com", 
+    "https://ecommerce-frontend-nine-lemon.vercel.app",
+     
 ]
 
 # Security settings for production
