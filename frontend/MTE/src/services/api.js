@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ecommerce-backend-xz2q.onrender.com';
+const API_BASE_URL = 'https://ecommerce-backend-xz2q.onrender.com';
 
 // Function to get CSRF token from cookies
 const getCSRFToken = () => {
