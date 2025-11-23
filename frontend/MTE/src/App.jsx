@@ -33,7 +33,7 @@ function App() {
   useEffect( () =>  {
     const ensureCSRFToken = async () => {
       try {
-        await api.get('/users/csrf');
+        await api.get('/api/users/csrf/');
         console.log('✅ CSRF token ensured');
 
       } catch (error){
