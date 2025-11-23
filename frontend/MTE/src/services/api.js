@@ -18,7 +18,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Important for sending cookies
+  withCredentials: true,
 });
 
 // Add request interceptor to include JWT token
@@ -69,7 +69,6 @@ api.interceptors.response.use(
       message: error.message
     });
 
-    // Handle token refresh for 401 errors
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -78,9 +77,8 @@ api.interceptors.response.use(
         if (refreshToken) {
           console.log('🔄 Attempting token refresh...');
           
-          // Use axios directly to avoid circular interceptor calls
           const response = await axios.post(
-            `${API_BASE_URL}/api/token/refresh/`, // FIXED: Added /api/
+            `${API_BASE_URL}/api/token/refresh/`,
             { refresh: refreshToken },
             {
               withCredentials: true,
@@ -92,20 +90,16 @@ api.interceptors.response.use(
           
           const newAccessToken = response.data.access;
           localStorage.setItem('access_token', newAccessToken);
-          
-          // Retry the original request with new token
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           console.log('✅ Token refreshed successfully');
           return api(originalRequest);
         }
       } catch (refreshError) {
         console.error('❌ Token refresh failed:', refreshError);
-        // Clear tokens and redirect to login
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user_info');
         
-        // Redirect to login page if we're not already there
         if (!window.location.pathname.includes('/login')) {
           window.location.href = '/login';
         }
@@ -116,47 +110,54 @@ api.interceptors.response.use(
   }
 );
 
+// CSRF Token function (ADD THIS)
+export const getCSRFTokenFromServer = async () => {
+  try {
+    const response = await api.get('/api/users/csrf/'); // FIXED: Added /api/
+    return response.data.csrfToken;
+  } catch (error) {
+    console.error('❌ Failed to get CSRF token:', error);
+    return null;
+  }
+};
+
 // Tenant API functions
 export const tenantAPI = {
-  getTenantBySubdomain: (subdomain) => {
-    const url = '/api/tenants/by-subdomain/' + subdomain; // FIXED
-    console.log('🔗 Constructed URL:', url);
-    console.log('🔗 Subdomain value:', subdomain);
-    return api.get(url);
-  },
+  getTenantBySubdomain: (subdomain) => 
+    api.get('/api/tenants/by-subdomain/' + subdomain),
   
   getAllTenants: () => 
-    api.get('/api/tenants/'), // FIXED
+    api.get('/api/tenants/'),
 
   getTenantsList: () =>
-    api.get('/api/tenants/tenants/'), // FIXED
+    api.get('/api/tenants/tenants/'),
 
   getUserStores: () =>
-    api.get('/api/tenants/my-stores/'), // FIXED
+    api.get('/api/tenants/my-stores/'),
 
   getUserTenants: () =>
-    api.get('/api/tenants/user-tenants/'), // FIXED
+    api.get('/api/tenants/user-tenants/'),
 
-  getTenantById: (id) => // FIXED: Added parameter and fixed template string
+  getTenantById: (id) =>
     api.get(`/api/tenants/${id}/`),
 
   createTenant: (tenantData) =>
-    api.post('/api/tenants/', tenantData), // FIXED
+    api.post('/api/tenants/', tenantData),
 };
 
 // Product API functions
 export const productAPI = {
   getProducts: (params = {}) => 
-    api.get('/api/products/products/', { params }), // FIXED
+    api.get('/api/products/products/', { params }),
   
   getProduct: (id) => 
-    api.get(`/api/products/products/${id}/`), // FIXED
+    api.get(`/api/products/products/${id}/`),
   
   getCategories: () => 
-    api.get('/api/products/categories/'), // FIXED
+    api.get('/api/products/categories/'),
   
   createProduct: (productData, config = {}) => {
-    return api.post('/api/products/products/', productData, { // FIXED
+    return api.post('/api/products/products/', productData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         ...config.headers,
@@ -166,7 +167,7 @@ export const productAPI = {
   },
   
   updateProduct: (id, productData, config = {}) => {
-    return api.patch(`/api/products/products/${id}/`, productData, { // FIXED
+    return api.patch(`/api/products/products/${id}/`, productData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         ...config.headers,
@@ -176,81 +177,80 @@ export const productAPI = {
   },
 
   deleteProduct: (id) => 
-    api.delete(`/api/products/products/${id}/`), // FIXED
+    api.delete(`/api/products/products/${id}/`),
   
   publishProduct: (id) => 
-    api.post(`/api/products/products/${id}/publish/`), // FIXED
+    api.post(`/api/products/products/${id}/publish/`),
   
   unpublishProduct: (id) => 
-    api.post(`/api/products/products/${id}/unpublish/`), // FIXED
+    api.post(`/api/products/products/${id}/unpublish/`),
 
-  getProductsByVendorSubdomain: (vendorSubdomain) => {
-    return api.get(`/api/products/by_vendor/${vendorSubdomain}/`); // FIXED
-  },
+  getProductsByVendorSubdomain: (vendorSubdomain) => 
+    api.get(`/api/products/by_vendor/${vendorSubdomain}/`),
   
-  getProductsByTenant: (tenantId) => {
-    return api.get(`/api/products/by_tenant/${tenantId}/`); // FIXED
-  },
+  getProductsByTenant: (tenantId) => 
+    api.get(`/api/products/by_tenant/${tenantId}/`),
   
-  getVendorProducts: (vendorSubdomain) => {
-    return api.get(`/api/products/vendor/${vendorSubdomain}/`); // FIXED
-  },
+  getVendorProducts: (vendorSubdomain) => 
+    api.get(`/api/products/vendor/${vendorSubdomain}/`),
 
-  getProductsForVendor: (vendorSubdomain) => {
-    return api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`); // FIXED
-  },
+  getProductsForVendor: (vendorSubdomain) => 
+    api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`),
 
-  getProductsWithVendorFilter: (vendorSubdomain) => {
-    return api.get(`/api/products/products/?vendor=${vendorSubdomain}`); // FIXED
-  }
+  getProductsWithVendorFilter: (vendorSubdomain) => 
+    api.get(`/api/products/products/?vendor=${vendorSubdomain}`)
 };
 
 // User API functions
 export const userAPI = {
   register: (userData) => 
-    api.post('/api/users/register/', userData), // FIXED
+    api.post('/api/users/register/', userData),
   
   login: (credentials) => 
-    api.post('/api/users/login/', credentials), // FIXED
+    api.post('/api/users/login/', credentials),
   
   logout: () => 
-    api.post('/api/users/logout/'), // FIXED
+    api.post('/api/users/logout/'),
   
   getProfile: () => 
-    api.get('/api/users/profile/'), // FIXED
+    api.get('/api/users/profile/'),
   
   updateProfile: (userData) => 
-    api.patch('/api/users/profile/', userData), // FIXED
+    api.patch('/api/users/profile/', userData),
+
+  // ADD CSRF endpoint
+  getCSRF: () => 
+    api.get('/api/users/csrf/'), // FIXED: Added /api/
 };
 
 // Payment API functions
 export const paymentAPI = {
   initiatePayment: (paymentData) => 
-    api.post('/api/payments/initiate-payment/', paymentData), // FIXED
+    api.post('/api/payments/initiate-payment/', paymentData),
   
   checkPaymentStatus: (paymentId) => 
-    api.get(`/api/payments/status/${paymentId}/`), // FIXED
+    api.get(`/api/payments/status/${paymentId}/`),
   
   createOrder: (orderData) => 
-    api.post('/api/orders/', orderData), // FIXED
+    api.post('/api/orders/', orderData),
 };
 
 // Cart API functions
 export const cartAPI = {
   getCart: () => 
-    api.get('/api/cart/'), // FIXED
+    api.get('/api/cart/'),
   
   addToCart: (itemData) => 
-    api.post('/api/cart/items/', itemData), // FIXED
+    api.post('/api/cart/items/', itemData),
   
   updateCartItem: (itemId, quantity) => 
-    api.patch(`/api/cart/items/${itemId}/`, { quantity }), // FIXED
+    api.patch(`/api/cart/items/${itemId}/`, { quantity }),
   
   removeFromCart: (itemId) => 
-    api.delete(`/api/cart/items/${itemId}/`), // FIXED
+    api.delete(`/api/cart/items/${itemId}/`),
   
   clearCart: () => 
-    api.delete('/api/cart/clear/'), // FIXED
+    api.delete('/api/cart/clear/'),
 };
 
 export default api;
