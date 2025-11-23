@@ -204,7 +204,7 @@ export const productAPI = {
 // User API functions
 export const userAPI = {
   register: (userData) => 
-    api.post('/api/users/register/', userData),
+    api.post('/api/users/', userData),
   
   login: (credentials) => 
     api.post('/api/users/login/', credentials),
