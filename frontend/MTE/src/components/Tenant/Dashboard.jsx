@@ -558,9 +558,9 @@ const VendorDashboard = () => {
         return imageField;
       }
       if (imageField.startsWith('/')) {
-        return `http://localhost:8000${imageField}`;
+        return `https://ecommerce-backend-xz2q.onrender.com${imageField}`;
       }
-      return `http://localhost:8000/media/${imageField}`;
+      return `https://ecommerce-backend-xz2q.onrender.com/media/${imageField}`;
     }
     
     // Return placeholder based on product category

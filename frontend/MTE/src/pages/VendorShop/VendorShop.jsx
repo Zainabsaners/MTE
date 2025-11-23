@@ -429,11 +429,11 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
       // If it's a relative path, construct the full URL
       // Django typically serves media files from /media/ URL
       if (imageField.startsWith('/')) {
-        return `http://localhost:8000${imageField}`;
+        return `https://ecommerce-backend-xz2q.onrender.com${imageField}`;
       }
       
       // If it's just a filename, construct the full URL
-      return `http://localhost:8000/media/${imageField}`;
+      return `https://ecommerce-backend-xz2q.onrender.com/media/${imageField}`;
     }
     
     return null;
