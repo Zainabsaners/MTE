@@ -12,8 +12,6 @@ const getCSRFToken = () => {
   return cookieValue;
 };
 
-
-
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -41,7 +39,7 @@ api.interceptors.request.use(
       method: config.method?.toUpperCase(),
       url: config.url,
       fullURL: config.baseURL + config.url,
-      hasJWR: !!token,
+      hasJWT: !!token,
       hasCSRF: !!csrfToken,
     });
     return config;
@@ -82,15 +80,12 @@ api.interceptors.response.use(
           
           // Use axios directly to avoid circular interceptor calls
           const response = await axios.post(
-            `${API_BASE_URL}/token/refresh/`,
+            `${API_BASE_URL}/api/token/refresh/`, // FIXED: Added /api/
             { refresh: refreshToken },
-            
             {
               withCredentials: true,
               headers: {
                 'X-CSRFToken': getCSRFToken(),
-
-                
               }
             }
           );
@@ -124,54 +119,54 @@ api.interceptors.response.use(
 // Tenant API functions
 export const tenantAPI = {
   getTenantBySubdomain: (subdomain) => {
-    const url = '/tenants/by-subdomain/' + subdomain;
+    const url = '/api/tenants/by-subdomain/' + subdomain; // FIXED
     console.log('🔗 Constructed URL:', url);
     console.log('🔗 Subdomain value:', subdomain);
     return api.get(url);
   },
   
   getAllTenants: () => 
-    api.get('/tenants/'),
+    api.get('/api/tenants/'), // FIXED
 
   getTenantsList: () =>
-    api.get('/tenants/tenants/'),
+    api.get('/api/tenants/tenants/'), // FIXED
 
   getUserStores: () =>
-    api.get('/tenants/my-stores/'),
+    api.get('/api/tenants/my-stores/'), // FIXED
 
   getUserTenants: () =>
-    api.get('/tenants/user-tenants/'),
-  getTenantById: () =>
-    api.get('/tenants/${id}/'),
+    api.get('/api/tenants/user-tenants/'), // FIXED
 
-  createTenant:(tenantData) =>
-    api.post('/tenants/', tenantData),
+  getTenantById: (id) => // FIXED: Added parameter and fixed template string
+    api.get(`/api/tenants/${id}/`),
 
+  createTenant: (tenantData) =>
+    api.post('/api/tenants/', tenantData), // FIXED
 };
 
 // Product API functions
 export const productAPI = {
   getProducts: (params = {}) => 
-    api.get('/products/products/', { params }),
+    api.get('/api/products/products/', { params }), // FIXED
   
   getProduct: (id) => 
-    api.get(`/products/products/${id}/`),
+    api.get(`/api/products/products/${id}/`), // FIXED
   
   getCategories: () => 
-    api.get('/products/categories/'),
+    api.get('/api/products/categories/'), // FIXED
   
   createProduct: (productData, config = {}) => {
-   return api.post('/products/products/', productData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      ...config.headers,
-    },
-    ...config,
-   });
+    return api.post('/api/products/products/', productData, { // FIXED
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        ...config.headers,
+      },
+      ...config,
+    });
   },
   
   updateProduct: (id, productData, config = {}) => {
-    return api.patch(`/products/products/${id}/`, productData, {
+    return api.patch(`/api/products/products/${id}/`, productData, { // FIXED
       headers: {
         'Content-Type': 'multipart/form-data',
         ...config.headers,
@@ -180,81 +175,82 @@ export const productAPI = {
     });
   },
 
-  
   deleteProduct: (id) => 
-    api.delete(`/products/products/${id}/`),
+    api.delete(`/api/products/products/${id}/`), // FIXED
   
   publishProduct: (id) => 
-    api.post(`/products/products/${id}/publish/`),
+    api.post(`/api/products/products/${id}/publish/`), // FIXED
   
   unpublishProduct: (id) => 
-    api.post(`/products/products/${id}/unpublish/`),
+    api.post(`/api/products/products/${id}/unpublish/`), // FIXED
 
   getProductsByVendorSubdomain: (vendorSubdomain) => {
-    return api.get(`/products/by_vendor/${vendorSubdomain}/`);
+    return api.get(`/api/products/by_vendor/${vendorSubdomain}/`); // FIXED
   },
+  
   getProductsByTenant: (tenantId) => {
-    return api.get(`/products/by_tenant/${tenantId}/`);
+    return api.get(`/api/products/by_tenant/${tenantId}/`); // FIXED
   },
+  
   getVendorProducts: (vendorSubdomain) => {
-    return api.get(`/products/vendor/${vendorSubdomain}/`);
+    return api.get(`/api/products/vendor/${vendorSubdomain}/`); // FIXED
   },
 
   getProductsForVendor: (vendorSubdomain) => {
-    return api.get(`/products/for_vendor/?vendor=${vendorSubdomain}`);
+    return api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`); // FIXED
   },
 
   getProductsWithVendorFilter: (vendorSubdomain) => {
-    return api.get(`/products/products/?vendor=${vendorSubdomain}`);
+    return api.get(`/api/products/products/?vendor=${vendorSubdomain}`); // FIXED
   }
 };
 
 // User API functions
 export const userAPI = {
   register: (userData) => 
-    api.post('/users/register/', userData),
+    api.post('/api/users/register/', userData), // FIXED
   
   login: (credentials) => 
-    api.post('/users/login/', credentials),
+    api.post('/api/users/login/', credentials), // FIXED
   
   logout: () => 
-    api.post('/users/logout/'),
+    api.post('/api/users/logout/'), // FIXED
   
   getProfile: () => 
-    api.get('/users/profile/'),
+    api.get('/api/users/profile/'), // FIXED
   
   updateProfile: (userData) => 
-    api.patch('/users/profile/', userData),
+    api.patch('/api/users/profile/', userData), // FIXED
 };
 
 // Payment API functions
 export const paymentAPI = {
   initiatePayment: (paymentData) => 
-    api.post('/payments/initiate-payment/', paymentData),
+    api.post('/api/payments/initiate-payment/', paymentData), // FIXED
   
   checkPaymentStatus: (paymentId) => 
-    api.get(`/payments/status/${paymentId}/`),
+    api.get(`/api/payments/status/${paymentId}/`), // FIXED
   
   createOrder: (orderData) => 
-    api.post('/orders/', orderData),
+    api.post('/api/orders/', orderData), // FIXED
 };
 
-// Cart API functions (if you have them)
+// Cart API functions
 export const cartAPI = {
   getCart: () => 
-    api.get('/cart/'),
+    api.get('/api/cart/'), // FIXED
   
   addToCart: (itemData) => 
-    api.post('/cart/items/', itemData),
+    api.post('/api/cart/items/', itemData), // FIXED
   
   updateCartItem: (itemId, quantity) => 
-    api.patch(`/cart/items/${itemId}/`, { quantity }),
+    api.patch(`/api/cart/items/${itemId}/`, { quantity }), // FIXED
   
   removeFromCart: (itemId) => 
-    api.delete(`/cart/items/${itemId}/`),
+    api.delete(`/api/cart/items/${itemId}/`), // FIXED
   
   clearCart: () => 
-    api.delete('/cart/clear/'),
+    api.delete('/api/cart/clear/'), // FIXED
 };
 
 export default api;
