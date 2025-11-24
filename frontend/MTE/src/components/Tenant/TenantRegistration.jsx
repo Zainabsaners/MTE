@@ -135,9 +135,9 @@ const TenantRegistration = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     
-    console.log('🔄 Submitting form data:', formData);
+    console.log('🔄 Starting tenant registration process...');
     
     // Validate passwords match
     if (formData.password !== formData.confirm_password) {
@@ -149,27 +149,73 @@ const TenantRegistration = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/tenants/tenant-register/', formData);
+      // Map form data to backend expected fields
+      const registrationData = {
+        // Required fields
+        subdomain: formData.subdomain,
+        password: formData.password,
+        confirm_password: formData.confirm_password,
+        
+        // Additional fields
+        name: formData.name,
+        email: formData.email,
+        phone_number: formData.phone_number,
+        subscription_tier: formData.subscription_tier,
+        mpesa_business_shortcode: formData.mpesa_business_shortcode || '',
+        mpesa_account_number: formData.mpesa_account_number || '',
+        description: formData.description || '',
+        owner_name: formData.owner_name,
+        business_registration: formData.business_registration || '',
+        address: formData.address || '',
+      };
+
+      console.log('📦 Sending registration data:', registrationData);
+      
+      // ✅ CORRECT ENDPOINT - Fixed path
+      const response = await api.post('/api/tenants/tenant-register/', registrationData, {
+        timeout: 30000,
+      });
       
       console.log('✅ Registration successful:', response.data);
       
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         setSuccess(true);
-        setMessage('Registration successful! Redirecting to dashboard...');
+        let successMessage = response.data.message || 'Registration successful! Awaiting admin approval.';
+        
+        // Add store URL if available
+        if (response.data.store_url) {
+          successMessage += ` Your store will be at: ${response.data.store_url}`;
+        }
+        
+        setMessage(successMessage);
         
         setTimeout(() => {
           navigate('/vendor-dashboard');
-        }, 3000);
+        }, 4000);
       }
     } catch (error) {
       console.error('❌ Registration failed:', error);
       
       if (error.response?.data) {
-        const errorMsg = error.response.data.error || JSON.stringify(error.response.data);
-        alert(`Registration failed: ${errorMsg}`);
-        setMessage(`Error: ${errorMsg}`);
+        console.log('📋 Backend validation errors:', error.response.data);
+        
+        // Handle validation errors
+        if (error.response.data.errors) {
+          const errorList = Object.entries(error.response.data.errors)
+            .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+            .join('\n');
+          alert(`Please fix the following errors:\n${errorList}`);
+          setMessage(`Validation errors: ${errorList}`);
+        } else {
+          const errorMsg = error.response.data.message || JSON.stringify(error.response.data);
+          alert(`Registration failed: ${errorMsg}`);
+          setMessage(`Error: ${errorMsg}`);
+        }
+      } else if (error.code === 'ECONNABORTED') {
+        alert('Registration timeout. The backend might be starting up. Please try again in 30 seconds.');
+        setMessage('Backend is waking up. Please try again shortly.');
       } else {
-        alert('Registration failed. Please try again.');
+        alert('Registration failed. Please check your connection and try again.');
         setMessage('Registration failed. Please try again.');
       }
     } finally {
@@ -212,7 +258,7 @@ const TenantRegistration = () => {
           required
         />
         <span style={smallTextStyle}>
-          Your store URL will be: {formData.subdomain || 'mystore'}.localhost:5173
+          Your store URL will be: {formData.subdomain || 'mystore'}.yourdomain.com
         </span>
       </div>
 
@@ -558,6 +604,7 @@ const TenantRegistration = () => {
             password: '', confirm_password: ''
           });
           setMessage('');
+          setSuccess(false);
         }}
         type="button"
       >
@@ -630,6 +677,19 @@ const TenantRegistration = () => {
           border: '1px solid #c3e6cb'
         }}>
           ✅ {message}
+        </div>
+      )}
+
+      {message && !success && (
+        <div style={{
+          padding: '1rem',
+          background: '#f8d7da',
+          color: '#721c24',
+          borderRadius: '4px',
+          marginBottom: '1rem',
+          border: '1px solid #f5c6cb'
+        }}>
+          ❌ {message}
         </div>
       )}
 

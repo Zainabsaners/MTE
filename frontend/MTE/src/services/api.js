@@ -19,6 +19,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
+  timeout: 30000, // 30 second timeout
 });
 
 // Add request interceptor to include JWT token
@@ -110,10 +111,10 @@ api.interceptors.response.use(
   }
 );
 
-// CSRF Token function (ADD THIS)
+// CSRF Token function
 export const getCSRFTokenFromServer = async () => {
   try {
-    const response = await api.get('/api/users/csrf/'); // FIXED: Added /api/
+    const response = await api.get('/api/users/csrf/');
     return response.data.csrfToken;
   } catch (error) {
     console.error('❌ Failed to get CSRF token:', error);
@@ -142,7 +143,7 @@ export const tenantAPI = {
     api.get(`/api/tenants/${id}/`),
 
   createTenant: (tenantData) =>
-    api.post('/api/tenants/', tenantData),
+    api.post('/api/tenants/tenant-register/', tenantData), // ✅ CORRECT ENDPOINT
 };
 
 // Product API functions
@@ -204,7 +205,7 @@ export const productAPI = {
 // User API functions
 export const userAPI = {
   register: (userData) => 
-    api.post('/api/users/', userData),
+    api.post('/api/users/register/', userData),
   
   login: (credentials) => 
     api.post('/api/users/login/', credentials),
@@ -218,9 +219,8 @@ export const userAPI = {
   updateProfile: (userData) => 
     api.patch('/api/users/profile/', userData),
 
-  // ADD CSRF endpoint
   getCSRF: () => 
-    api.get('/api/users/csrf/'), // FIXED: Added /api/
+    api.get('/api/users/csrf/'),
 };
 
 // Payment API functions
