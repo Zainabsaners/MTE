@@ -1,26 +1,27 @@
 import api from './api';
 
 export const tenantService = {
-  // Get all tenants (ADD THIS METHOD)
-  getAllTenants: () => api.get('/tenants/'),
+  // Get all tenants
+  getAllTenants: () => api.get('/api/tenants/'),
   
-  // Get tenant by subdomain (ADD THIS METHOD)
-  getTenantBySubdomain: (subdomain) => api.get(`/tenants/by-subdomain/${subdomain}/`),
+  // Get tenant by subdomain
+  getTenantBySubdomain: (subdomain) => api.get(`/api/tenants/by-subdomain/${subdomain}/`),
   
-  // Get current user's tenants (ADD THIS METHOD)
-  getUserTenants: () => api.get('/tenants/my-tenants/'),
+  // Get current user's tenants
+  getUserTenants: () => api.get('/api/tenants/my-tenants/'),
   
-  // Get tenant by ID (ADD THIS METHOD)
-  getTenant: (id) => api.get(`/tenants/${id}/`),
+  // Get tenant by ID
+  getTenant: (id) => api.get(`/api/tenants/${id}/`),
   
-  // Your existing methods:
+  // FIXED: Add /api/ prefix
   registerTenant: async (tenantData) => {
-    return await api.post('/tenants/tenant-register/', tenantData);
+    return await api.post('/api/tenants/tenant-register/', tenantData);
   },
 
   getTenantStatus: async (tenantId) => {
-    return await api.get(`/tenants/tenant-status/${tenantId}/`);
+    return await api.get(`/api/tenants/tenant-status/${tenantId}/`);
   },
+
 
   getSubscriptionPlans: () => {
     return [
