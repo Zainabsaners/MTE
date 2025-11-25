@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../../services/api';
 
 const Register = () => {
-  const [userType, setUserType] = useState('customer'); // Default to customer
+  const [userType, setUserType] = useState('customer');
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -12,8 +13,8 @@ const Register = () => {
     first_name: '',
     last_name: '',
     phone_number: '',
-    store_name: '', // Vendor-specific field
-    subdomain: ''   // Vendor-specific field
+    store_name: '',
+    subdomain: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,29 +49,74 @@ const Register = () => {
       return;
     }
 
+    if (userType === 'vendor' && !formData.subdomain) {
+      setError('Store subdomain is required for vendors');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
-    // Add user_type to form data
-    const submitData = {
-      ...formData,
-      user_type: userType
-    };
+    try {
+      let result;
 
-    const result = await register(submitData);
-    
-    if (result.success) {
-      // Redirect based on user type
       if (userType === 'vendor') {
-        navigate('/vendor-dashboard');
+        // Use tenant registration endpoint for vendors
+        const tenantData = {
+          name: formData.store_name,
+          subdomain: formData.subdomain,
+          email: formData.email,
+          phone_number: formData.phone_number || '',
+          owner_name: `${formData.first_name} ${formData.last_name}`,
+          password: formData.password,
+          confirm_password: formData.password2,
+          subscription_tier: 'basic'
+        };
+
+        console.log('🔄 Registering vendor:', tenantData);
+        result = await api.post('/api/tenants/tenant-register/', tenantData);
+        
+        if (result.status === 200 || result.status === 201) {
+          console.log('✅ Vendor registration successful');
+          navigate('/vendor-dashboard');
+        }
       } else {
-        navigate('/'); // Redirect customers to home page
+        // Use regular user registration for customers
+        const userData = {
+          ...formData,
+          user_type: userType
+        };
+        
+        result = await register(userData);
+        
+        if (result.success) {
+          navigate('/');
+        }
       }
-    } else {
-      setError(result.error);
+    } catch (error) {
+      console.error('❌ Registration error:', error);
+      
+      if (error.response?.data) {
+        // Handle validation errors
+        if (error.response.data.errors) {
+          const errorList = Object.entries(error.response.data.errors)
+            .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+            .join('\n');
+          setError(`Please fix the following errors:\n${errorList}`);
+        } else {
+          const errorMsg = error.response.data.message || 
+                          error.response.data.detail || 
+                          JSON.stringify(error.response.data);
+          setError(`Registration failed: ${errorMsg}`);
+        }
+      } else if (error.code === 'ECONNABORTED') {
+        setError('Registration timeout. Please try again.');
+      } else {
+        setError('Registration failed. Please check your connection and try again.');
+      }
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -81,7 +127,6 @@ const Register = () => {
         
         {/* User Type Toggle */}
         <div style={styles.userTypeToggle}>
-          
           <div style={styles.toggleButtons}>
             <button
               type="button"
@@ -108,7 +153,9 @@ const Register = () => {
 
         {error && (
           <div style={styles.error}>
-            {typeof error === 'object' ? JSON.stringify(error) : error}
+            {error.split('\n').map((line, index) => (
+              <div key={index}>{line}</div>
+            ))}
           </div>
         )}
 
@@ -143,7 +190,7 @@ const Register = () => {
                   placeholder="your-store-name"
                 />
                 <small style={styles.helpText}>
-                  This will be your store URL: your-store-name.localhost:5173
+                  This will be your store URL: {formData.subdomain || 'your-store'}.yourdomain.com
                 </small>
               </div>
             </div>
@@ -305,13 +352,6 @@ const styles = {
     borderRadius: '8px',
     border: '1px solid #e9ecef'
   },
-  toggleLabel: {
-    display: 'block',
-    marginBottom: '1rem',
-    fontWeight: '600',
-    color: '#34495e',
-    fontSize: '1rem'
-  },
   toggleButtons: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -410,7 +450,8 @@ const styles = {
     borderRadius: '6px',
     marginBottom: '1.5rem',
     border: '1px solid #fcc',
-    fontSize: '0.9rem'
+    fontSize: '0.9rem',
+    whiteSpace: 'pre-line'
   },
   loginLink: {
     textAlign: 'center',

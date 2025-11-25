@@ -13,7 +13,7 @@ export const tenantService = {
   // Get tenant by ID
   getTenant: (id) => api.get(`/api/tenants/${id}/`),
   
-  // FIXED: Add /api/ prefix
+  // Tenant registration
   registerTenant: async (tenantData) => {
     return await api.post('/api/tenants/tenant-register/', tenantData);
   },
@@ -21,7 +21,6 @@ export const tenantService = {
   getTenantStatus: async (tenantId) => {
     return await api.get(`/api/tenants/tenant-status/${tenantId}/`);
   },
-
 
   getSubscriptionPlans: () => {
     return [
