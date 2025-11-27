@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../../services/api';
+import api, { getCSRFTokenFromServer } from '../../services/api';
 
 const Register = () => {
   const [userType, setUserType] = useState('customer');
@@ -18,9 +18,25 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [csrfReady, setCsrfReady] = useState(false);
 
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  // Ensure CSRF token is available
+  useEffect(() => {
+    const ensureCSRFToken = async () => {
+      try {
+        await getCSRFTokenFromServer();
+        setCsrfReady(true);
+      } catch (error) {
+        console.log('CSRF token setup may not be required');
+        setCsrfReady(true); // Continue anyway
+      }
+    };
+
+    ensureCSRFToken();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -33,6 +49,11 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!csrfReady) {
+      setError('System is getting ready. Please try again in a moment.');
+      return;
+    }
+
     if (formData.password !== formData.password2) {
       setError('Passwords do not match');
       return;
@@ -111,6 +132,8 @@ const Register = () => {
         }
       } else if (error.code === 'ECONNABORTED') {
         setError('Registration timeout. Please try again.');
+      } else if (error.message?.includes('CSRF')) {
+        setError('Security token issue. Please refresh the page and try again.');
       } else {
         setError('Registration failed. Please check your connection and try again.');
       }
@@ -295,12 +318,12 @@ const Register = () => {
 
           <button 
             type="submit" 
-            disabled={loading}
+            disabled={loading || !csrfReady}
             style={{
               ...styles.button,
               ...(userType === 'customer' ? styles.customerButton : styles.vendorButton),
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer'
+              opacity: (loading || !csrfReady) ? 0.7 : 1,
+              cursor: (loading || !csrfReady) ? 'not-allowed' : 'pointer'
             }}
           >
             {loading ? 'Creating Account...' : `Create ${userType === 'customer' ? 'Customer' : 'Vendor'} Account`}

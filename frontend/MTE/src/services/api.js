@@ -2,6 +2,16 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://ecommerce-backend-xz2q.onrender.com';
 
+// Function to get CSRF token from cookies
+const getCSRFToken = () => {
+  const name = 'csrftoken';
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith(name + '='))
+    ?.split('=')[1];
+  return cookieValue;
+};
+
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,22 +19,30 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  timeout: 30000,
+  timeout: 30000, // 30 second timeout
 });
 
-// Add request interceptor to include JWT token
+// Add request interceptor to include JWT token and CSRF token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
+    const csrfToken = getCSRFToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    // Add CSRF token for mutating requests
+    const method = config.method?.toUpperCase();
+    if (csrfToken && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+      config.headers['X-CSRFToken'] = csrfToken;
     }
     
     console.log('🔄 API Request:', {
       method: config.method?.toUpperCase(),
       url: config.url,
       hasJWT: !!token,
+      hasCSRF: !!csrfToken,
     });
     return config;
   },
@@ -64,7 +82,12 @@ api.interceptors.response.use(
           const response = await axios.post(
             `${API_BASE_URL}/api/token/refresh/`,
             { refresh: refreshToken },
-            { withCredentials: true }
+            {
+              withCredentials: true,
+              headers: {
+                'X-CSRFToken': getCSRFToken(),
+              }
+            }
           );
           
           const newAccessToken = response.data.access;
@@ -88,6 +111,35 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// CSRF Token function
+export const getCSRFTokenFromServer = async () => {
+  try {
+    // Try different possible CSRF endpoints
+    const endpoints = [
+      '/api/users/csrf/',
+      '/api/csrf/',
+      '/csrf/'
+    ];
+    
+    for (const endpoint of endpoints) {
+      try {
+        const response = await api.get(endpoint);
+        if (response.data.csrfToken) {
+          return response.data.csrfToken;
+        }
+      } catch (error) {
+        console.log(`CSRF endpoint ${endpoint} not available`);
+      }
+    }
+    
+    // If no CSRF endpoint works, try to get it from cookies
+    return getCSRFToken();
+  } catch (error) {
+    console.error('❌ Failed to get CSRF token:', error);
+    return getCSRFToken(); // Fallback to cookie method
+  }
+};
 
 // Tenant API functions
 export const tenantAPI = {
@@ -185,6 +237,9 @@ export const userAPI = {
   
   updateProfile: (userData) => 
     api.patch('/api/users/profile/', userData),
+
+  getCSRF: () => 
+    api.get('/api/users/csrf/'),
 };
 
 // Payment API functions
