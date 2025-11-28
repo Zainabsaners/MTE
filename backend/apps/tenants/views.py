@@ -54,7 +54,6 @@ def tenant_by_subdomain(request, subdomain):
 @permission_classes([AllowAny])
 @csrf_exempt
 def register_tenant(request):
-    # Handle tenant registration with user creation
     print("🎯 REGISTER_TENANT FUNCTION CALLED!")
     print("Request Data:", request.data)
     
@@ -62,69 +61,44 @@ def register_tenant(request):
         serializer = TenantRegistrationSerializer(data=request.data)
 
         if serializer.is_valid():
-            # Create the tenant first
+            # Create the tenant
             tenant = serializer.save()
             
             # ✅ CREATE USER ACCOUNT FOR LOGIN
             try:
                 user_data = request.data
-                
-                # Create user with the same email and password
                 user = User.objects.create_user(
-                    username=user_data['email'],  # Use email as username
+                    username=user_data['email'],
                     email=user_data['email'],
                     password=user_data['password'],
-                    first_name=user_data.get('owner_name', '').split(' ')[0] if user_data.get('owner_name') else '',
-                    last_name=' '.join(user_data.get('owner_name', '').split(' ')[1:]) if user_data.get('owner_name') else '',
-                    # Add any custom fields your CustomUser model has
+                    first_name=user_data.get('owner_name', '').split(' ')[0],
+                    last_name=' '.join(user_data.get('owner_name', '').split(' ')[1:]),
                 )
                 
-                # ✅ LINK TENANT TO USER (Update tenant with owner info)
-                tenant.owner_email = user_data['email']
-                if user_data.get('owner_name'):
-                    tenant.owner_name = user_data['owner_name']
+                # Link tenant to user
+                tenant.owner_email = user.email
                 tenant.save()
                 
                 print(f"✅ User account created: {user.email}")
-                print(f"✅ Tenant linked to user: {tenant.name} -> {user.email}")
                 
             except Exception as user_error:
                 print(f"❌ User creation failed: {user_error}")
-                # If user creation fails, delete the tenant to avoid orphaned records
                 tenant.delete()
                 return Response({
                     'success': False,
                     'error': f'User account creation failed: {str(user_error)}'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
-            # ✅ GENERATE JWT TOKENS FOR AUTO-LOGIN
+            # ✅ GENERATE JWT TOKENS
             from rest_framework_simplejwt.tokens import RefreshToken
-            
             refresh = RefreshToken.for_user(user)
-            
-            # ✅ CREATE DEFAULT STORE SETTINGS
-            store_settings, created = StoreSettings.objects.get_or_create(
-                store=tenant,
-                defaults={
-                    'email': tenant.email,
-                    'phone': tenant.phone_number,
-                    'description': tenant.description,
-                    'notification_email': tenant.email,
-                }
-            )
             
             return Response({
                 'success': True,
                 'message': 'Vendor account created successfully!',
-                'tenant': {
-                    'id': str(tenant.id),
-                    'name': tenant.name,
-                    'subdomain': tenant.subdomain,
-                    'status': tenant.subscription_status,
-                    'tier': tenant.subscription_tier,
-                    'is_active': tenant.is_active,
-                    'owner_email': tenant.owner_email,
-                    'owner_name': tenant.owner_name,
+                'tokens': {
+                    'access': str(refresh.access_token),
+                    'refresh': str(refresh)
                 },
                 'user': {
                     'id': user.id,
@@ -133,12 +107,7 @@ def register_tenant(request):
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'user_type': 'vendor'
-                },
-                'tokens': {
-                    'access': str(refresh.access_token),
-                    'refresh': str(refresh)
-                },
-                'store_url': f"{tenant.subdomain}.yourdomain.com"  # Update with your actual domain
+                }
             }, status=status.HTTP_201_CREATED)
             
         else:
@@ -148,9 +117,7 @@ def register_tenant(request):
             }, status=status.HTTP_400_BAD_REQUEST)
             
     except Exception as e:
-        print("💥 UNEXPECTED ERROR in tenant registration:")
-        print(f"Error type: {type(e).__name__}")
-        print(f"Error message: {str(e)}")
+        print("💥 UNEXPECTED ERROR:", str(e))
         import traceback
         traceback.print_exc()
 
