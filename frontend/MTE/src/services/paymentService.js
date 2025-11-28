@@ -1,42 +1,21 @@
-import api from './api';  // Change this line only
+import api from './api';
 
-/*const getCSRFToken = () => {
-    const name = 'csrftoken';
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }    
-    }
-    return cookieValue;
-};*/
 export const paymentService = {
-  // Initiate Mpesa payment
+  // Initiate Mpesa payment - ✅ FIXED: Added /api/
   initiateMpesaPayment: async (orderId, phoneNumber) => {
-    //const csrfToken = getCSRFToken();
-
     return await api({
       method: 'POST',
-      url: '/payments/initiate-payment/',
+      url: '/api/payments/initiate-payment/',
       data: {
         order_id: orderId,
         phone_number: phoneNumber
       }
-     // headers: {
-       // 'X-CSRFToken': csrfToken
     });
-  
   },
 
-  // Check payment status
+  // Check payment status - ✅ FIXED: Added /api/
   checkPaymentStatus: async (paymentId) => {
-    return await api.get(`/payments/status/${paymentId}/`);
-    
+    return await api.get(`/api/payments/status/${paymentId}/`);
   },
 
   // Poll payment status (for real-time updates)
@@ -68,4 +47,3 @@ export const paymentService = {
     });
   }
 };
-

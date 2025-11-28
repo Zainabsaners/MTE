@@ -1,4 +1,3 @@
-// src/services/storeService.js - UPDATED WITH AUTH CONTEXT
 import api from './api';
 
 const cleanSettingsData = (data) => {
@@ -97,8 +96,8 @@ export const storeService = {
       
       console.log('👤 Current user from AuthContext:', currentUser);
       
-      // Get all stores from the API
-      const response = await api.get('/tenants/tenants/');
+      // Get all stores from the API - ✅ FIXED: Added /api/
+      const response = await api.get('/api/tenants/');
       
       let stores = [];
       if (response.data.results && Array.isArray(response.data.results)) {
@@ -117,7 +116,6 @@ export const storeService = {
       const userStore = findUserStore(stores, currentUser);
       
       if (!userStore) {
-         
         // Fallback: Try to use first store with a warning
         const fallbackStore = stores[0];
         console.log(`✅ Using store: ${fallbackStore.name}`);
@@ -141,7 +139,8 @@ export const storeService = {
       if (currentStore.data.id !== storeId) {
         throw new Error('You can only update your own store');
       }
-      return await api.patch(`/tenants/tenants/${storeId}/`, data);
+      // ✅ FIXED: Added /api/
+      return await api.patch(`/api/tenants/${storeId}/`, data);
     } catch (error) {
       console.error('❌ Error updating store:', error);
       throw error;
@@ -157,7 +156,8 @@ export const storeService = {
       console.log('🔒 Updating settings for store:', currentStore.data.name);
       
       const cleanedData = cleanSettingsData(data);
-      const response = await api.patch('/tenants/store-settings/', cleanedData);
+      // ✅ FIXED: Added /api/
+      const response = await api.patch('/api/tenants/store-settings/', cleanedData);
       
       console.log('✅ Store settings updated successfully');
       return response;
@@ -178,7 +178,8 @@ export const storeService = {
       const formData = new FormData();
       formData.append('logo', logoFile);
       
-      const response = await api.patch('/tenants/store-settings/', formData, {
+      // ✅ FIXED: Added /api/
+      const response = await api.patch('/api/tenants/store-settings/', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
         }
@@ -202,7 +203,8 @@ export const storeService = {
       
       console.log('🔒 Testing MPESA for store:', currentStore.data.name);
       
-      const response = await api.post(`/tenants/stores/${storeId}/test-mpesa/`);
+      // ✅ FIXED: Added /api/
+      const response = await api.post(`/api/tenants/stores/${storeId}/test-mpesa/`);
       console.log('✅ MPESA test initiated successfully');
       return response;
     } catch (error) {

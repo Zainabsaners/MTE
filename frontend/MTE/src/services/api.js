@@ -125,7 +125,7 @@ export const tenantAPI = {
     api.get('/api/tenants/tenants/'),
 
   getUserStores: () =>
-    api.get('/api/tenants/my-stores/'),
+    api.get('/api/tenants/my-store/'),
 
   getUserTenants: () =>
     api.get('/api/tenants/user-tenants/'),
