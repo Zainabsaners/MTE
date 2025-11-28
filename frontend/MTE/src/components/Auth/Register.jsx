@@ -14,10 +14,17 @@ const Register = () => {
     last_name: '',
     phone_number: '',
     store_name: '',
-    subdomain: ''
+    subdomain: '',
+    description: '',
+    business_registration: '',
+    address: '',
+    mpesa_business_shortcode: '',
+    mpesa_account_number: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState('');
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -64,50 +71,88 @@ const Register = () => {
         // Use tenant registration endpoint for vendors
         const tenantData = {
           name: formData.store_name,
-          subdomain: formData.subdomain,
+          subdomain: formData.subdomain.toLowerCase().replace(/\s+/g, '-'),
           email: formData.email,
           phone_number: formData.phone_number || '',
           owner_name: `${formData.first_name} ${formData.last_name}`,
           password: formData.password,
           confirm_password: formData.password2,
-          subscription_tier: 'basic'
+          subscription_tier: 'basic',
+          description: formData.description || '',
+          business_registration: formData.business_registration || '',
+          address: formData.address || '',
+          mpesa_business_shortcode: formData.mpesa_business_shortcode || '',
+          mpesa_account_number: formData.mpesa_account_number || ''
         };
 
         console.log('🔄 Registering vendor:', tenantData);
         result = await api.post('/api/tenants/tenant-register/', tenantData);
         
         if (result.status === 200 || result.status === 201) {
-          console.log('✅ Vendor registration successful');
-          navigate('/vendor-dashboard');
+          console.log('✅ Vendor registration successful:', result.data);
+          
+          if (result.data.tokens) {
+            // ✅ AUTO-LOGIN VENDOR with new response format
+            localStorage.setItem('access_token', result.data.tokens.access);
+            localStorage.setItem('refresh_token', result.data.tokens.refresh);
+            localStorage.setItem('user_info', JSON.stringify(result.data.user));
+            
+            setSuccess(true);
+            setMessage('🎉 Vendor account created! Redirecting to dashboard...');
+            
+            setTimeout(() => {
+              navigate('/vendor-dashboard');
+            }, 2000);
+          } else {
+            // Fallback if no tokens
+            setMessage('✅ Vendor account created! Please login.');
+            setTimeout(() => {
+              navigate('/login');
+            }, 3000);
+          }
         }
       } else {
         // Use regular user registration for customers
         const userData = {
-          ...formData,
-          user_type: userType
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          password2: formData.password2,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          phone_number: formData.phone_number,
+          user_type: 'customer'
         };
         
         result = await register(userData);
         
         if (result.success) {
-          navigate('/');
+          setSuccess(true);
+          setMessage('🎉 Customer account created! Redirecting to home...');
+          
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
         }
       }
     } catch (error) {
       console.error('❌ Registration error:', error);
       
       if (error.response?.data) {
+        console.log('📋 Full error response:', error.response.data);
+        
         // Handle validation errors
         if (error.response.data.errors) {
           const errorList = Object.entries(error.response.data.errors)
             .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
             .join('\n');
           setError(`Please fix the following errors:\n${errorList}`);
+        } else if (error.response.data.message) {
+          setError(error.response.data.message);
+        } else if (error.response.data.error) {
+          setError(error.response.data.error);
         } else {
-          const errorMsg = error.response.data.message || 
-                          error.response.data.detail || 
-                          JSON.stringify(error.response.data);
-          setError(`Registration failed: ${errorMsg}`);
+          setError('Registration failed. Please check your information.');
         }
       } else if (error.code === 'ECONNABORTED') {
         setError('Registration timeout. Please try again.');
@@ -118,6 +163,9 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  // ... (keep your existing styles and JSX rendering code the same)
+  // Just make sure to use the updated state variables: success, message, error
 
   return (
     <div style={styles.container}>
@@ -159,6 +207,12 @@ const Register = () => {
           </div>
         )}
 
+        {success && message && (
+          <div style={styles.success}>
+            {message}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} style={styles.form}>
           {/* Vendor-specific fields */}
           {userType === 'vendor' && (
@@ -192,6 +246,18 @@ const Register = () => {
                 <small style={styles.helpText}>
                   This will be your store URL: {formData.subdomain || 'your-store'}.yourdomain.com
                 </small>
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Store Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  style={styles.textarea}
+                  placeholder="Describe your store..."
+                  rows="3"
+                />
               </div>
             </div>
           )}
@@ -228,30 +294,34 @@ const Register = () => {
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.label}>Username *</label>
+            <label style={styles.label}>
+              {userType === 'customer' ? 'Username *' : 'Email *'}
+            </label>
             <input
-              type="text"
-              name="username"
-              value={formData.username}
+              type={userType === 'customer' ? 'text' : 'email'}
+              name={userType === 'customer' ? 'username' : 'email'}
+              value={userType === 'customer' ? formData.username : formData.email}
               onChange={handleChange}
               required
               style={styles.input}
-              placeholder="Choose a username"
+              placeholder={userType === 'customer' ? 'Choose a username' : 'Enter your email'}
             />
           </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Email *</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={styles.input}
-              placeholder="Enter your email"
-            />
-          </div>
+          {userType === 'customer' && (
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Email *</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                style={styles.input}
+                placeholder="Enter your email"
+              />
+            </div>
+          )}
 
           <div style={styles.formGroup}>
             <label style={styles.label}>Phone Number</label>
@@ -293,6 +363,62 @@ const Register = () => {
             </div>
           </div>
 
+          {userType === 'vendor' && (
+            <>
+              <h3 style={styles.sectionTitle}>Additional Information</h3>
+              
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Business Registration Number</label>
+                <input
+                  type="text"
+                  name="business_registration"
+                  value={formData.business_registration}
+                  onChange={handleChange}
+                  style={styles.input}
+                  placeholder="Optional - if your business is registered"
+                />
+              </div>
+
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Business Address</label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  style={styles.textarea}
+                  placeholder="Your business physical address..."
+                  rows="2"
+                />
+              </div>
+
+              <div style={styles.row}>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>MPesa Business Shortcode</label>
+                  <input
+                    type="text"
+                    name="mpesa_business_shortcode"
+                    value={formData.mpesa_business_shortcode}
+                    onChange={handleChange}
+                    style={styles.input}
+                    placeholder="Optional - paybill/till number"
+                  />
+                </div>
+
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>MPesa Account Number</label>
+                  <input
+                    type="text"
+                    name="mpesa_account_number"
+                    value={formData.mpesa_account_number}
+                    onChange={handleChange}
+                    style={styles.input}
+                    placeholder="Optional - account number"
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
           <button 
             type="submit" 
             disabled={loading}
@@ -330,7 +456,7 @@ const styles = {
     borderRadius: '12px',
     boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
     width: '100%',
-    maxWidth: '550px'
+    maxWidth: '600px'
   },
   title: {
     textAlign: 'center',
@@ -420,6 +546,17 @@ const styles = {
     fontSize: '1rem',
     transition: 'border-color 0.3s ease',
   },
+  textarea: {
+    width: '100%',
+    padding: '0.875rem',
+    border: '1px solid #dcdfe6',
+    borderRadius: '6px',
+    fontSize: '1rem',
+    transition: 'border-color 0.3s ease',
+    resize: 'vertical',
+    minHeight: '80px',
+    fontFamily: 'inherit'
+  },
   helpText: {
     display: 'block',
     marginTop: '0.25rem',
@@ -452,6 +589,15 @@ const styles = {
     border: '1px solid #fcc',
     fontSize: '0.9rem',
     whiteSpace: 'pre-line'
+  },
+  success: {
+    background: '#d4edda',
+    color: '#155724',
+    padding: '0.875rem',
+    borderRadius: '6px',
+    marginBottom: '1.5rem',
+    border: '1px solid #c3e6cb',
+    fontSize: '0.9rem'
   },
   loginLink: {
     textAlign: 'center',

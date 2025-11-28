@@ -1,35 +1,30 @@
 import api from './api';
 
 export const tenantService = {
-  // Get all tenants - CORRECT
+  // Get all tenants
   getAllTenants: () => api.get('/api/tenants/'),
   
-  // Get tenant by subdomain - CORRECT
+  // Get tenant by subdomain
   getTenantBySubdomain: (subdomain) => api.get(`/api/tenants/by-subdomain/${subdomain}/`),
   
-  // Get current user's tenants - WRONG: Change to correct endpoint
-  getUserTenants: () => api.get('/api/tenants/my-store/'), // ✅ FIXED: my-store not my-tenants
+  // Get current user's store
+  getUserStores: () => api.get('/api/tenants/my-store/'),
   
-  // Get tenant by ID - CORRECT
+  // Get tenant by ID
   getTenant: (id) => api.get(`/api/tenants/${id}/`),
   
-  // Tenant registration - CORRECT
+  // Tenant registration
   registerTenant: async (tenantData) => {
     return await api.post('/api/tenants/tenant-register/', tenantData);
   },
 
-  // Get tenant status - CORRECT
   getTenantStatus: async (tenantId) => {
     return await api.get(`/api/tenants/tenant-status/${tenantId}/`);
   },
 
-  // Store settings - ADD THIS (exists in your URLs)
+  // Store settings
   getStoreSettings: () => api.get('/api/tenants/store-settings/'),
-  
-  // Admin endpoints - ADD THESE (exists in your URLs)
-  getAdminTenants: () => api.get('/api/tenants/admin/tenants/'),
-  approveTenant: (tenantId) => api.post(`/api/tenants/admin/tenants/${tenantId}/approve`),
-  rejectTenant: (tenantId) => api.post(`/api/tenants/admin/tenants/${tenantId}/reject`),
+  updateStoreSettings: (data) => api.patch('/api/tenants/store-settings/', data),
 
   getSubscriptionPlans: () => {
     return [

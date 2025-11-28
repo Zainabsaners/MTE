@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
         
         // Optional: Verify token is still valid by making an API call
         try {
-          await api.get('/api/users/profile/'); // ✅ FIXED: Added /api/
+          await api.get('/api/users/profile/');
         } catch (error) {
           console.log('Token validation failed, logging out');
           logout();
@@ -48,9 +48,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       console.log('🔄 Attempting login...');
-      const response = await api.post('/api/users/login/', { // ✅ FIXED: Added /api/
-        username,
-        password
+      const response = await api.post('/api/users/login/', {
+        username: username,
+        password: password
       });
       
       console.log('✅ Login response:', response.data);
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       console.log('🔄 Attempting registration...');
-      const response = await api.post('/api/users/register/', userData); // ✅ FIXED: Added /api/
+      const response = await api.post('/api/users/register/', userData);
       
       console.log('✅ Registration response:', response.data);
       const { user, access, refresh } = response.data;

@@ -109,32 +109,31 @@ api.interceptors.response.use(
 
 // Simple CSRF token getter - don't call API endpoints that don't exist
 export const getCSRFTokenFromServer = async () => {
-  // Just return the cookie value, don't make API calls for CSRF
   return getCSRFToken();
 };
 
 // Tenant API functions
 export const tenantAPI = {
   getTenantBySubdomain: (subdomain) => 
-    api.get('/api/tenants/by-subdomain/' + subdomain),
+    api.get(`/api/tenants/by-subdomain/${subdomain}/`),
   
   getAllTenants: () => 
     api.get('/api/tenants/'),
 
-  getTenantsList: () =>
-    api.get('/api/tenants/tenants/'),
-
   getUserStores: () =>
     api.get('/api/tenants/my-store/'),
-
-  getUserTenants: () =>
-    api.get('/api/tenants/user-tenants/'),
 
   getTenantById: (id) =>
     api.get(`/api/tenants/${id}/`),
 
   createTenant: (tenantData) =>
     api.post('/api/tenants/tenant-register/', tenantData),
+
+  getTenantStatus: (tenantId) =>
+    api.get(`/api/tenants/tenant-status/${tenantId}/`),
+
+  getStoreSettings: () =>
+    api.get('/api/tenants/store-settings/'),
 };
 
 // Product API functions
@@ -176,21 +175,6 @@ export const productAPI = {
   
   unpublishProduct: (id) => 
     api.post(`/api/products/products/${id}/unpublish/`),
-
-  getProductsByVendorSubdomain: (vendorSubdomain) => 
-    api.get(`/api/products/by_vendor/${vendorSubdomain}/`),
-  
-  getProductsByTenant: (tenantId) => 
-    api.get(`/api/products/by_tenant/${tenantId}/`),
-  
-  getVendorProducts: (vendorSubdomain) => 
-    api.get(`/api/products/vendor/${vendorSubdomain}/`),
-
-  getProductsForVendor: (vendorSubdomain) => 
-    api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`),
-
-  getProductsWithVendorFilter: (vendorSubdomain) => 
-    api.get(`/api/products/products/?vendor=${vendorSubdomain}`)
 };
 
 // User API functions
