@@ -35,31 +35,23 @@ const Login = () => {
     const result = await login(formData.username, formData.password);
 
     if (result.success) {
-       const userType = result.user?.user_type;
-           if (userType === 'vendor') {
-      navigate('/vendor-dashboard');
-    } else {
-      navigate('/'); // Redirect customers to home page
-    }
-  } else {
-    setError(result.error);
-  }
-  
-  setLoading(false);
- };
-    /*if (result.success) {
-      navigate('/vendor-dashboard');
+      const userType = result.user?.user_type;
+      if (userType === 'vendor') {
+        navigate('/vendor-dashboard');
+      } else {
+        navigate('/');
+      }
     } else {
       setError(result.error);
     }
     
     setLoading(false);
-  };*/
+  };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>Login your Account</h2>
+        <h2 style={styles.title}>Login to Your Account</h2>
         
         {error && (
           <div style={styles.error}>
@@ -69,7 +61,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Username</label>
+            <label style={styles.label}>Username or Email</label>
             <input
               type="text"
               name="username"
@@ -77,7 +69,7 @@ const Login = () => {
               onChange={handleChange}
               required
               style={styles.input}
-              placeholder="Enter your username"
+              placeholder="Enter your username or email"
             />
           </div>
 

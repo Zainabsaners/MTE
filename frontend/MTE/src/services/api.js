@@ -19,7 +19,7 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  timeout: 30000, // 30 second timeout
+  timeout: 30000,
 });
 
 // Add request interceptor to include JWT token and CSRF token
@@ -32,7 +32,7 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Add CSRF token for mutating requests
+    // Add CSRF token for mutating requests (if available)
     const method = config.method?.toUpperCase();
     if (csrfToken && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
       config.headers['X-CSRFToken'] = csrfToken;
@@ -82,12 +82,7 @@ api.interceptors.response.use(
           const response = await axios.post(
             `${API_BASE_URL}/api/token/refresh/`,
             { refresh: refreshToken },
-            {
-              withCredentials: true,
-              headers: {
-                'X-CSRFToken': getCSRFToken(),
-              }
-            }
+            { withCredentials: true }
           );
           
           const newAccessToken = response.data.access;
@@ -112,33 +107,10 @@ api.interceptors.response.use(
   }
 );
 
-// CSRF Token function
+// Simple CSRF token getter - don't call API endpoints that don't exist
 export const getCSRFTokenFromServer = async () => {
-  try {
-    // Try different possible CSRF endpoints
-    const endpoints = [
-      '/api/users/csrf/',
-      '/api/csrf/',
-      '/csrf/'
-    ];
-    
-    for (const endpoint of endpoints) {
-      try {
-        const response = await api.get(endpoint);
-        if (response.data.csrfToken) {
-          return response.data.csrfToken;
-        }
-      } catch (error) {
-        console.log(`CSRF endpoint ${endpoint} not available`);
-      }
-    }
-    
-    // If no CSRF endpoint works, try to get it from cookies
-    return getCSRFToken();
-  } catch (error) {
-    console.error('❌ Failed to get CSRF token:', error);
-    return getCSRFToken(); // Fallback to cookie method
-  }
+  // Just return the cookie value, don't make API calls for CSRF
+  return getCSRFToken();
 };
 
 // Tenant API functions
@@ -237,9 +209,6 @@ export const userAPI = {
   
   updateProfile: (userData) => 
     api.patch('/api/users/profile/', userData),
-
-  getCSRF: () => 
-    api.get('/api/users/csrf/'),
 };
 
 // Payment API functions

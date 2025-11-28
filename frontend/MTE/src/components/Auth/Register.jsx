@@ -23,21 +23,6 @@ const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Ensure CSRF token is available
-  useEffect(() => {
-    const ensureCSRFToken = async () => {
-      try {
-        await getCSRFTokenFromServer();
-        setCsrfReady(true);
-      } catch (error) {
-        console.log('CSRF token setup may not be required');
-        setCsrfReady(true); // Continue anyway
-      }
-    };
-
-    ensureCSRFToken();
-  }, []);
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -318,7 +303,7 @@ const Register = () => {
 
           <button 
             type="submit" 
-            disabled={loading || !csrfReady}
+            disabled={loading}
             style={{
               ...styles.button,
               ...(userType === 'customer' ? styles.customerButton : styles.vendorButton),
