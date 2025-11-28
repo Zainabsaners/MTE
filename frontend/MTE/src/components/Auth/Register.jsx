@@ -90,27 +90,26 @@ const Register = () => {
         
         if (result.status === 200 || result.status === 201) {
           console.log('✅ Vendor registration successful:', result.data);
-          
+  
+          // Auto-login if we have tokens
           if (result.data.tokens) {
-            // ✅ AUTO-LOGIN VENDOR with new response format
-            localStorage.setItem('access_token', result.data.tokens.access);
-            localStorage.setItem('refresh_token', result.data.tokens.refresh);
-            localStorage.setItem('user_info', JSON.stringify(result.data.user));
-            
-            setSuccess(true);
-            setMessage('🎉 Vendor account created! Redirecting to dashboard...');
-            
-            setTimeout(() => {
-              navigate('/vendor-dashboard');
-            }, 2000);
-          } else {
-            // Fallback if no tokens
-            setMessage('✅ Vendor account created! Please login.');
-            setTimeout(() => {
-              navigate('/login');
-            }, 3000);
-          }
-        }
+          localStorage.setItem('access_token', result.data.tokens.access);
+          localStorage.setItem('refresh_token', result.data.tokens.refresh);
+          localStorage.setItem('user_info', JSON.stringify(result.data.user));
+    
+          setSuccess(true);
+          setMessage('🎉 Vendor account created! Redirecting to dashboard...');
+          setTimeout(() => {
+            navigate('/vendor-dashboard');
+        }, 2000);
+      } else {
+        // Fallback
+        setMessage('✅ Vendor account created! Please login.');
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+      }
+    }
       } else {
         // Use regular user registration for customers
         const userData = {
