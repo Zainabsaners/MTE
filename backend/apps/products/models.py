@@ -6,6 +6,7 @@ import uuid
 import random
 import string
 from django.utils import timezone  # Fixed import
+from cloudinary.models import CloudinaryField 
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -37,7 +38,7 @@ class Product(models.Model):
     track_quantity = models.BooleanField(default=True)
     stock_quantity = models.IntegerField(default=0)
     allow_backorder = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image = CloudinaryField('image', folder='products/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

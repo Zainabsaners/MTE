@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Category, Product
+from cloudinary.models import CloudinaryField 
+from cloudinary import CloudinaryImage
 
 class CategorySerializer(serializers.ModelSerializer):
     Product_count = serializers.SerializerMethodField()
@@ -27,14 +29,16 @@ class ProductSerializer(serializers.ModelSerializer):
         if obj.track_quantity:
             return obj.stock_quantity > 0
         return True
-
     def get_image_url(self, obj):
-        """Get full URL for product image"""
         if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
+            return CloudinaryImage(str(obj.image)).build_url(
+                width=800,
+                height=600,
+                crop="fill",
+                quality="auto",
+                format="webp"
+            )
+        return None
         return None
 
 class ProductCreateSerializer(serializers.ModelSerializer):
@@ -42,6 +46,14 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
         read_only_fields = ['id','sku','barcode', 'created_at', 'updated_at']
+    
+    def create(self, validated_data):
+        image = validated_data.pop('image', None)
+        product = Product.objects.create(**validated_data)
+        if image:
+            product.image = image
+            product.save()
+        return product
 
     def validate_sku(self, value):
         """Ensure SKU is unique for the tenant"""
