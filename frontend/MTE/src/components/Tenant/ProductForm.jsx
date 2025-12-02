@@ -129,109 +129,85 @@ const ProductForm = ({ product, onSave, onCancel }) => {
   const handleImageChange = (file) => {
     setImageFile(file);
   };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setErrors({});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrors({});
+  // For new products, validate that a store is selected
+  if (!product?.id && !formData.tenant) {
+    setErrors({ tenant: 'Please select a store' });
+    setLoading(false);
+    return;
+  }
 
-    // For new products, validate that a store is selected
-    if (!product?.id && !formData.tenant) {
-      setErrors({ tenant: 'Please select a store' });
-      setLoading(false);
-      return;
+  try {
+    const submitData = new FormData();
+    
+    // ✅ APPEND ALL FORM FIELDS CORRECTLY
+    submitData.append('name', formData.name);
+    submitData.append('description', formData.description);
+    submitData.append('price', formData.price);
+    submitData.append('stock_quantity', formData.stock_quantity);
+    submitData.append('status', formData.status);
+    submitData.append('is_featured', formData.is_featured);
+    
+    // Only append tenant if it exists (for new products)
+    if (formData.tenant) {
+      submitData.append('tenant', formData.tenant);
+    }
+    
+    // ✅ APPEND CATEGORY (Uppercase C - matches Django model)
+    if (formData.Category && formData.Category !== '') {
+      submitData.append('Category', formData.Category); // Uppercase C
+      console.log('✅ Adding Category to FormData:', formData.Category);
     }
 
-    try {
-      const submitData = new FormData();
-      
-      // Append only the fields that should be updated
-      const fieldsToInclude = [
-        'name', 'description', 'price', 'stock_quantity', 
-        'status', 'is_featured', 'tenant', 'sku', 'compare_at_price'
-      ];
-      
-      fieldsToInclude.forEach(key => {
-        if (formData[key] !== null && formData[key] !== undefined && formData[key] !== '') {
-          submitData.append(key, formData[key]);
-        }
-      });
-
-      // Handle Category with uppercase C - only send if a Category is selected
-      if (formData.Category && formData.Category !== '') {
-        submitData.append('Category', formData.Category); // Uppercase C
-        console.log('✅ Adding Category to FormData (uppercase C):', formData.Category);
-      } else {
-        console.log('ℹ️ No Category selected, skipping Category field');
-      }
-
-      // Handle image upload - only append if a new image was selected
-      if (imageFile) {
-        submitData.append('image', imageFile);
-        console.log('✅ Adding new image to FormData');
-      } else if (product?.id) {
-        console.log('ℹ️ No new image selected, keeping current image');
-      }
-      
-      // Remove read-only fields that might cause issues
-      const readOnlyFields = [
-        'id', 'created_at', 'updated_at', 'image_url', 'vendor', 
-        'tenant_name', 'in_stock', 'allow_backorder', 'track_quantity',
-        'barcode', 'cost_price', 'seo_title', 'seo_description'
-      ];
-      
-      readOnlyFields.forEach(field => {
-        if (submitData.has(field)) {
-          submitData.delete(field);
-        }
-      });
-
-      // Debug: Log all FormData entries
-      console.log('📦 All FormData entries:');
-      for (let [key, value] of submitData.entries()) {
-        console.log(`  ${key}:`, value);
-      }
-
-      let response;
-      if (product?.id) {
-        console.log('🔄 Updating product with ID:', product.id);
-        response = await productAPI.updateProduct(product.id, submitData);
-      } else {
-        console.log('🔄 Creating new product');
-        response = await productAPI.createProduct(submitData);
-      }
-
-      console.log('✅ Product saved successfully:', response.data);
-      console.log('🔍 Response Category:', response.data.Category);
-      onSave?.(response.data);
-      
-    } catch (error) {
-      console.error('❌ Error saving product:', error);
-      if (error.response?.data) {
-        // Handle image validation errors specifically
-        if (error.response.data.image) {
-          setErrors({ 
-            image: Array.isArray(error.response.data.image) 
-              ? error.response.data.image[0] 
-              : error.response.data.image 
-          });
-        } else if (error.response.data.Category) {
-          setErrors({ 
-            Category: Array.isArray(error.response.data.Category) 
-              ? error.response.data.Category[0] 
-              : error.response.data.Category 
-          });
-        } else {
-          setErrors(error.response.data);
-        }
-        console.log('📋 API Error details:', error.response.data);
-      } else {
-        setErrors({ general: 'Failed to save product. Please try again.' });
-      }
-    } finally {
-      setLoading(false);
+    // ✅ APPEND IMAGE FOR CLOUDINARY UPLOAD
+    if (imageFile) {
+      submitData.append('image', imageFile);
+      console.log('✅ Adding image to FormData for Cloudinary upload');
     }
-  };
+
+    // ✅ DEBUG: Log all FormData entries
+    console.log('📦 FormData entries for Cloudinary upload:');
+    for (let [key, value] of submitData.entries()) {
+      console.log(`  ${key}:`, value);
+    }
+
+    let response;
+    if (product?.id) {
+      console.log('🔄 Updating product with ID:', product.id);
+      response = await productAPI.updateProduct(product.id, submitData);
+    } else {
+      console.log('🔄 Creating new product');
+      response = await productAPI.createProduct(submitData);
+    }
+
+    console.log('✅ Product saved successfully to Cloudinary:', response.data);
+    onSave?.(response.data);
+    
+  } catch (error) {
+    console.error('❌ Error saving product to Cloudinary:', error);
+    if (error.response?.data) {
+      // Handle Cloudinary image upload errors
+      if (error.response.data.image) {
+        setErrors({ 
+          image: Array.isArray(error.response.data.image) 
+            ? error.response.data.image[0] 
+            : error.response.data.image 
+        });
+      } else {
+        setErrors(error.response.data);
+      }
+      console.log('📋 Cloudinary API Error details:', error.response.data);
+    } else {
+      setErrors({ general: 'Failed to save product. Please try again.' });
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Reusable styles
   const containerStyle = {
@@ -451,9 +427,21 @@ const ProductForm = ({ product, onSave, onCancel }) => {
         {/* Product Image Upload */}
         <div style={formGroupStyle}>
           <ImageUpload
-            onImageChange={handleImageChange}
+            onImageChange={(fileOrUrl, cloudinaryId) => {
+              if ( typeof fileOrUrl === 'string' ) {
+                // its a cloudinary URL
+                setFormData(prev => ({ ...prev, image_url: fileOrUrl}));
+                setCloudinaryImageId(cloudinaryId);
+              } else {
+                // its a file object
+                setImageFile(fileOrUrl);
+              }
+            }}
             currentImage={product?.image_url || product?.image}
             label="Product Image"
+            uploadMethod="cloudinary"
+            cloudName="dwotnbvhz"
+            uploadPreset="ML image"
           />
           {errors.image && (
             <div style={{
