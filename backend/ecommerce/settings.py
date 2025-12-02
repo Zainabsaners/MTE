@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'apps.products',
     'apps.orders',
     'apps.payments',
-    'cloudinary',
-    'cloudinary_storage',
+    
 ]
 
 # MPESA Configuration
