@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'apps.products',
     'apps.orders',
     'apps.payments',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 # MPESA Configuration
@@ -109,9 +111,9 @@ else:
 
 # Cloudinary configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', ''),
-    'API_KEY': config('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': config('CLOUDINARY_API_SECRET', ''),
+    'CLOUD_NAME': config(' dwotnbvhz', ''),
+    'API_KEY': config('	584391927331488', ''),
+    'API_SECRET': config('XQN4nXNzoJsT1ypfw9KU6M7jgEQ', ''),
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
