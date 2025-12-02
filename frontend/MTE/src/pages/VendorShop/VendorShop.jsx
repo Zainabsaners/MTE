@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { tenantAPI, productAPI } from '../../services/api';
@@ -73,15 +73,10 @@ const VendorShop = () => {
       
       // Try multiple approaches to get vendor-specific products
       const endpointsToTry = [
-        // 1. Try query parameter with vendor filter (most reliable)
         () => productAPI.getProductsWithVendorFilter(vendorSubdomain),
-        // 2. Try by tenant ID if available
         ...(tenantData?.data?.id ? [() => productAPI.getProductsByTenant(tenantData.data.id)] : []),
-        // 3. Try by vendor subdomain
         () => productAPI.getProductsByVendorSubdomain(vendorSubdomain),
-        // 4. Try the for_vendor endpoint
         () => productAPI.getProductsForVendor(vendorSubdomain),
-        // 5. Fallback: get all products and filter on frontend
         async () => {
           const response = await productAPI.getProducts();
           const allProducts = response.data?.results || response.data || [];
@@ -402,8 +397,10 @@ const VendorShop = () => {
   );
 };
 
-// Updated Product Card Component with Real Images for Your Model
+// Updated Product Card Component with Cloudinary Support
 const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
+  const [imageError, setImageError] = useState(false);
+  
   const formatPrice = (price) => {
     const priceValue = typeof price === 'string' ? parseFloat(price) : price;
     return new Intl.NumberFormat('en-KE', {
@@ -413,35 +410,64 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
     }).format(priceValue);
   };
 
-  // ✅ Function to get product image URL based on your model
+  // ✅ Function to get CLOUDINARY product image URL
   const getProductImage = (product) => {
-    // Your model has an 'image' field that stores the image
-    const imageField = product.image;
+    // Check multiple possible image sources
+    const imageSources = [
+      product.image_url, // From serializer (optimized Cloudinary URL)
+      product.image,     // Original CloudinaryField
+      product.image?.url // If image is an object
+    ];
     
-    console.log('🖼️ Raw image field:', imageField);
+    // Find the first valid image source
+    let imageUrl = imageSources.find(source => 
+      source && (typeof source === 'string' || source?.url)
+    );
     
-    if (imageField) {
-      // If it's already a full URL, use it directly
-      if (imageField.startsWith('http')) {
-        return imageField;
-      }
-      
-      // If it's a relative path, construct the full URL
-      // Django typically serves media files from /media/ URL
-      if (imageField.startsWith('/')) {
-        return `https://ecommerce-backend-xz2q.onrender.com${imageField}`;
-      }
-      
-      // If it's just a filename, construct the full URL
-      return `https://ecommerce-backend-xz2q.onrender.com/media/${imageField}`;
+    // If imageUrl is an object with url property
+    if (imageUrl && typeof imageUrl === 'object' && imageUrl.url) {
+      imageUrl = imageUrl.url;
     }
     
-    return null;
+    console.log('🖼️ Image URL for', product.name, ':', imageUrl);
+    
+    if (imageUrl) {
+      // If it's a Cloudinary URL, optimize it
+      if (imageUrl.includes('cloudinary.com') || imageUrl.includes('res.cloudinary.com')) {
+        // Add Cloudinary transformations for better performance
+        const optimizedUrl = imageUrl
+          .replace('/upload/', '/upload/w_400,h_400,c_fill,q_auto,f_auto/')
+          .replace(/\/upload\/v\d+\//, '/upload/w_400,h_400,c_fill,q_auto,f_auto/');
+        
+        console.log('✨ Optimized Cloudinary URL:', optimizedUrl);
+        return optimizedUrl;
+      }
+      
+      // If it's already a full URL, return as is
+      if (imageUrl.startsWith('http')) {
+        return imageUrl;
+      }
+    }
+    
+    // Fallback to Unsplash placeholder
+    return `https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&q=80&auto=format`;
   };
 
   const productImage = getProductImage(product);
-  console.log('🖼️ Final product image URL for', product.name, ':', productImage);
 
+  const handleImageError = () => {
+    console.log('❌ Image failed to load');
+    setImageError(true);
+  };
+
+  const handleAddToCart = () => {
+    if (product.stock_quantity > 0) {
+      addToCart(product, 1);
+      alert(`Added ${product.name} to cart!`);
+    }
+  };
+
+  // Styles for ProductCard
   const cardStyle = {
     background: 'white',
     borderRadius: '12px',
@@ -451,6 +477,9 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
     border: '1px solid #e9ecef',
     textDecoration: 'none',
     color: 'inherit',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   };
 
   const imageStyle = {
@@ -488,8 +517,37 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
     zIndex: 2,
   };
 
+  const featuredBadgeStyle = {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    backgroundColor: '#e67e22',
+    color: 'white',
+    padding: '0.5rem 1rem',
+    borderRadius: '4px',
+    fontSize: '0.8rem',
+    fontWeight: 600,
+    zIndex: 2,
+  };
+
+  const cloudinaryBadgeStyle = {
+    position: 'absolute',
+    bottom: '10px',
+    right: '10px',
+    background: 'rgba(52, 152, 219, 0.9)',
+    color: 'white',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    fontSize: '0.7rem',
+    fontWeight: 600,
+    zIndex: 2,
+  };
+
   const infoStyle = {
     padding: '1.5rem',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
   };
 
   const nameStyle = {
@@ -509,6 +567,7 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
+    flex: 1,
   };
 
   const priceStyle = {
@@ -551,24 +610,10 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
     cursor: product.stock_quantity > 0 ? 'pointer' : 'not-allowed',
     transition: 'all 0.3s ease',
     fontFamily: 'inherit',
+    marginTop: 'auto',
   };
 
-  const handleAddToCart = () => {
-    if (product.stock_quantity > 0) {
-      addToCart(product, 1);
-      alert(`Added ${product.name} to cart!`);
-    }
-  };
-
-  const handleImageError = (e) => {
-    console.log('❌ Image failed to load, using placeholder');
-    e.target.style.display = 'none';
-    // Show placeholder by hiding the failed image
-  };
-
-  const handleImageLoad = (e) => {
-    console.log('✅ Image loaded successfully');
-  };
+  const isCloudinaryImage = productImage && productImage.includes('cloudinary.com');
 
   return (
     <div 
@@ -579,7 +624,7 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
         
         // Add image zoom effect on hover
         const image = e.currentTarget.querySelector('img');
-        if (image && productImage) {
+        if (image && productImage && !imageError) {
           image.style.transform = 'scale(1.05)';
         }
       }}
@@ -589,29 +634,44 @@ const ProductCard = ({ product, vendorSubdomain, addToCart }) => {
         
         // Remove image zoom effect
         const image = e.currentTarget.querySelector('img');
-        if (image && productImage) {
+        if (image && productImage && !imageError) {
           image.style.transform = 'scale(1)';
         }
       }}
     >
       <div style={imageStyle}>
-        {/* ✅ Real Product Image */}
-        {productImage ? (
+        {productImage && !imageError ? (
           <>
             <img 
               src={productImage} 
               alt={product.name}
               style={realImageStyle}
               onError={handleImageError}
-              onLoad={handleImageLoad}
               loading="lazy"
+              crossOrigin="anonymous"
             />
-            {/* Hidden placeholder that shows if image fails */}
-            <div style={{...placeholderStyle, display: 'none', position: 'absolute'}}>🛍️</div>
+            {product.is_featured && (
+              <div style={featuredBadgeStyle}>
+                ⭐ Featured
+              </div>
+            )}
+            {isCloudinaryImage && (
+              <div style={cloudinaryBadgeStyle}>
+                ☁️ Cloudinary
+              </div>
+            )}
           </>
         ) : (
-          /* ✅ Show placeholder if no image exists */
-          <div style={placeholderStyle}>🛍️</div>
+          <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+          }}>
+            <span style={placeholderStyle}>🛍️</span>
+          </div>
         )}
         
         {product.stock_quantity === 0 && (

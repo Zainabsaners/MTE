@@ -1,11 +1,10 @@
 import api from './api';
 
 export const productService = {
-  // Get vendor products - ✅ FIXED: Added /api/
+  // Get vendor products
   getVendorProducts: async (params = {}) => {
     const response = await api.get('/api/products/products/', {params});
-    // Always return the products array directly
-    if(Array.isArray(response.data )){
+    if(Array.isArray(response.data)){
       return response;
     } else if (response.data && Array.isArray(response.data.results)){
       return {
@@ -17,68 +16,93 @@ export const productService = {
     }
   },
 
-  // Get single product - ✅ FIXED: Added /api/
+  // Get single product
   getVendorProduct: async (productId) => {
     return await api.get(`/api/products/products/${productId}/`);
   },
 
-  // Create product - ✅ FIXED: Added /api/
+  // ✅ CREATE PRODUCT WITH CLOUDINARY UPLOAD (UPDATED)
   createProduct: async (productData) => {
-    return await api.post('/api/products/products/', productData);
+    return await api.post('/api/products/products/', productData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Add this for file uploads
+      },
+    });
   },
 
-  // Update product - ✅ FIXED: Added /api/
+  // ✅ UPDATE PRODUCT WITH CLOUDINARY UPLOAD (UPDATED)
   updateProduct: async (productId, productData) => {
-    return await api.patch(`/api/products/products/${productId}/`, productData);
+    return await api.patch(`/api/products/products/${productId}/`, productData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Add this for file uploads
+      },
+    });
   },
 
-  // Delete product - ✅ FIXED: Added /api/
+  // Delete product
   deleteProduct: async (productId) => {
     return await api.delete(`/api/products/products/${productId}/`);
   },
 
-  // Publish product - ✅ FIXED: Added /api/
+  // Publish product
   publishProduct: async (productId) => {
     return await api.post(`/api/products/products/${productId}/publish/`);
   },
 
-  // Unpublish product - ✅ FIXED: Added /api/
+  // Unpublish product
   unpublishProduct: async (productId) => {
     return await api.post(`/api/products/products/${productId}/unpublish/`);
   },
 
-  // Get product stats - ✅ FIXED: Added /api/
+  // Get product stats
   getProductStats: async () => {
     return await api.get('/api/products/products/stats/');
   },
 
-  // Get categories - ✅ FIXED: Added /api/
+  // Get categories
   getCategories: async () => {
     const response = await api.get('/api/products/categories/');
-    // Handle different response formats
     if (Array.isArray(response.data)) {
-      return response; // Direct array
+      return response;
     } else if (response.data && Array.isArray(response.data.results)) {
-      // Django REST framework paginated response
       return { ...response, data: response.data.results };
     } else if (response.data && Array.isArray(response.data.categories)){
-      // Custom format with categories key
       return { ...response, data: response.data.categories };
     } else {
-      // Return as is, let the component handle it
       return response;
     }
   },
   
-  // Update product category specifically - ✅ FIXED: Added /api/
+  // Update product category specifically
   updateProductCategory: async(productId, categoryId) => {
-    return await api.patch(`/api/products/products/${productId}/`, { // ✅ FIXED: Template literal
+    return await api.patch(`/api/products/products/${productId}/`, {
       category: categoryId
     });
   },
   
-  // Bulk update products - ✅ FIXED: Added /api/
-  bulkUpdateProducts: async(updates) => {
-    return await api.patch('/api/products/products/bulk-update/', updates);
+  // ✅ UPLOAD PRODUCT IMAGE TO CLOUDINARY (NEW FUNCTION)
+  uploadProductImage: async (productId, imageFile) => {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    
+    return await api.patch(`/api/products/products/${productId}/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  
+  // ✅ BULK UPLOAD MULTIPLE IMAGES (NEW FUNCTION)
+  uploadMultipleImages: async (productId, imageFiles) => {
+    const formData = new FormData();
+    imageFiles.forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+    });
+    
+    return await api.post(`/api/products/products/${productId}/upload-images/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   }
 };

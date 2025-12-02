@@ -1,11 +1,85 @@
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
 
-const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) => {
+const ImageUpload = ({ 
+  onImageChange, 
+  currentImage, 
+  label = "Product Image",
+  uploadMethod = 'backend', // 'backend' or 'cloudinary'
+  cloudName = 'dwotnbvhz', // Your Cloudinary cloud name
+  uploadPreset = 'ML image' // Your Cloudinary upload preset
+}) => {
   const [previewUrl, setPreviewUrl] = useState(currentImage || '');
   const [isDragging, setIsDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadedToCloudinary, setUploadedToCloudinary] = useState(false);
+  const [cloudinaryUrl, setCloudinaryUrl] = useState('');
   const fileInputRef = useRef(null);
 
-  const handleFileSelect = (file) => {
+  // Handle Cloudinary direct upload
+  const handleCloudinaryUpload = async (file) => {
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', uploadPreset);
+      formData.append('cloud_name', cloudName);
+      formData.append('folder', 'products');
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (response.data.secure_url) {
+        const url = response.data.secure_url;
+        setCloudinaryUrl(url);
+        setUploadedToCloudinary(true);
+        setPreviewUrl(url);
+        
+        // Pass Cloudinary URL to parent component
+        onImageChange(url, response.data.public_id);
+        
+        console.log('✅ Image uploaded to Cloudinary:', url);
+        return url;
+      }
+    } catch (error) {
+      console.error('❌ Cloudinary upload error:', error);
+      throw error;
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  // Handle backend upload (original method)
+  const handleBackendUpload = (file) => {
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreviewUrl(e.target.result);
+    };
+    reader.readAsDataURL(file);
+    
+    // Pass file to parent component
+    onImageChange(file);
+  };
+
+  const handleFileSelect = async (file) => {
     if (file && file.type.startsWith('image/')) {
       // Validate file size (5MB max)
       if (file.size > 5 * 1024 * 1024) {
@@ -13,15 +87,17 @@ const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) =
         return;
       }
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewUrl(e.target.result);
-      };
-      reader.readAsDataURL(file);
-      
-      // Pass file to parent component
-      onImageChange(file);
+      if (uploadMethod === 'cloudinary') {
+        try {
+          await handleCloudinaryUpload(file);
+        } catch (error) {
+          alert('Failed to upload to Cloudinary. Please try again.');
+          // Fallback to backend upload
+          handleBackendUpload(file);
+        }
+      } else {
+        handleBackendUpload(file);
+      }
     } else {
       alert('Please select a valid image file (PNG, JPG, JPEG)');
     }
@@ -54,12 +130,30 @@ const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) =
   };
 
   const triggerFileInput = () => {
-    fileInputRef.current?.click();
+    if (!uploading) {
+      fileInputRef.current?.click();
+    }
   };
 
   const removeImage = () => {
     setPreviewUrl('');
+    setUploadedToCloudinary(false);
+    setCloudinaryUrl('');
     onImageChange(null);
+  };
+
+  // Determine upload status text
+  const getUploadStatusText = () => {
+    if (uploading) {
+      return `Uploading to Cloudinary... ${uploadProgress}%`;
+    }
+    if (uploadedToCloudinary) {
+      return '✅ Uploaded to Cloudinary';
+    }
+    if (uploadMethod === 'cloudinary') {
+      return 'Click to upload to Cloudinary';
+    }
+    return 'Click to upload or drag and drop';
   };
 
   return (
@@ -72,6 +166,19 @@ const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) =
         fontSize: '14px'
       }}>
         {label}
+        {uploadMethod === 'cloudinary' && (
+          <span style={{
+            marginLeft: '8px',
+            fontSize: '0.8rem',
+            background: '#3498db',
+            color: 'white',
+            padding: '2px 8px',
+            borderRadius: '12px',
+            fontWeight: '500'
+          }}>
+            ☁️ Cloudinary
+          </span>
+        )}
       </label>
 
       <div
@@ -80,9 +187,9 @@ const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) =
           borderRadius: '8px',
           padding: '2rem',
           textAlign: 'center',
-          backgroundColor: isDragging ? '#f8f9fa' : 'white',
+          backgroundColor: uploading ? '#f8f9fa' : 'white',
           transition: 'all 0.3s ease',
-          cursor: 'pointer',
+          cursor: uploading ? 'default' : 'pointer',
           position: 'relative',
           minHeight: '200px',
           display: 'flex',
@@ -100,9 +207,35 @@ const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) =
           onChange={handleFileInputChange}
           accept="image/*"
           style={{ display: 'none' }}
+          disabled={uploading}
         />
 
-        {previewUrl ? (
+        {uploading ? (
+          <div style={{ textAlign: 'center', width: '100%' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+            <p style={{ margin: '0 0 0.5rem 0', color: '#2c3e50', fontWeight: '500' }}>
+              Uploading to Cloudinary...
+            </p>
+            <div style={{
+              width: '80%',
+              height: '8px',
+              background: '#e9ecef',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              margin: '0 auto 1rem'
+            }}>
+              <div style={{
+                width: `${uploadProgress}%`,
+                height: '100%',
+                background: '#3498db',
+                transition: 'width 0.3s'
+              }} />
+            </div>
+            <p style={{ margin: 0, color: '#7f8c8d', fontSize: '0.9rem' }}>
+              {uploadProgress}% complete
+            </p>
+          </div>
+        ) : previewUrl ? (
           <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <img
               src={previewUrl}
@@ -139,24 +272,72 @@ const ImageUpload = ({ onImageChange, currentImage, label = "Product Image" }) =
             >
               ×
             </button>
+            {uploadedToCloudinary && (
+              <div style={{
+                position: 'absolute',
+                bottom: '10px',
+                left: '10px',
+                background: 'rgba(52, 152, 219, 0.9)',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '0.8rem',
+                fontWeight: '600'
+              }}>
+                ☁️ Uploaded to Cloudinary
+              </div>
+            )}
           </div>
         ) : (
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.7 }}>
-              📸
+              {uploadMethod === 'cloudinary' ? '☁️' : '📸'}
             </div>
             <p style={{ margin: '0 0 0.5rem 0', color: '#2c3e50', fontWeight: '500' }}>
-              Click to upload or drag and drop
+              {getUploadStatusText()}
             </p>
             <p style={{ margin: 0, color: '#7f8c8d', fontSize: '0.9rem' }}>
               PNG, JPG, JPEG up to 5MB
             </p>
-            <p style={{ margin: '0.5rem 0 0 0', color: '#3498db', fontSize: '0.8rem', fontWeight: '500' }}>
-              Recommended: 800x600px or larger
-            </p>
+            {uploadMethod === 'cloudinary' && (
+              <p style={{ 
+                margin: '0.5rem 0 0 0', 
+                color: '#3498db', 
+                fontSize: '0.8rem', 
+                fontWeight: '500',
+                background: '#e8f4fd',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                display: 'inline-block'
+              }}>
+                Powered by Cloudinary
+              </p>
+            )}
           </div>
         )}
       </div>
+
+      {uploadedToCloudinary && cloudinaryUrl && (
+        <div style={{
+          background: '#e8f4fd',
+          padding: '0.75rem',
+          borderRadius: '4px',
+          marginTop: '0.5rem',
+          fontSize: '0.85rem'
+        }}>
+          <div style={{ fontWeight: '600', color: '#2c3e50', marginBottom: '0.25rem' }}>
+            Cloudinary URL:
+          </div>
+          <div style={{
+            color: '#3498db',
+            wordBreak: 'break-all',
+            fontSize: '0.8rem',
+            fontFamily: 'monospace'
+          }}>
+            {cloudinaryUrl}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
