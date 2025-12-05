@@ -134,6 +134,10 @@ export const tenantAPI = {
 
   getStoreSettings: () =>
     api.get('/api/tenants/store-settings/'),
+  getTenantsList: () =>
+     api.get('/api/tenants/'),
+  getUserTenants: () => 
+    api.get('/api/tenants/my-store/'),
 };
 
 // Product API functions
