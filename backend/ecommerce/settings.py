@@ -193,12 +193,14 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Security settings for production
-if not DEBUG:
+if os.environ.get('RENDER'):
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    SESSION_COOKIE_SAMESITE  = 'None'
+    CSRF_COOKIE_SAMESITE = 'None'
 
 CORS_ALLOW_CREDENTIALS = True
 
