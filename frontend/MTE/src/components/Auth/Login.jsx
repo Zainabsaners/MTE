@@ -78,7 +78,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
-            <label style={styles.label}>Username or Email</label>
+            <label style={styles.label}> Email</label>
             <input
               type="text"
               name="username"
