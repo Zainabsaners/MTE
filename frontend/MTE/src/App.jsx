@@ -17,6 +17,7 @@ import Register from './components/Auth/Register';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import api from './services/api';
 import Settings from './components/Settings/Settings';
+import VendorDashboardGuard from './components/VendorDashboardGuard';
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,7 +68,9 @@ function App() {
                   {/* Protected routes - require authentication */}
                   <Route path="/vendor-dashboard" element={
                     <ProtectedRoute>
+                    <VendorDashboardGuard>
                       <VendorDashboard />
+                    </VendorDashboardGuard>
                     </ProtectedRoute>
                   }/>
                   

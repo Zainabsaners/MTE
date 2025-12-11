@@ -134,6 +134,64 @@ const TenantRegistration = () => {
     e.target.style = inputStyle;
   };
 
+  // ✅ FIXED: Function to save tokens from registration
+  const saveTokensAndRedirect = (responseData) => {
+    console.log('🔐 Processing registration response...', responseData);
+    
+    // Extract tokens from response (check different possible formats)
+    let accessToken = null;
+    let refreshToken = null;
+    let userData = null;
+    
+    // Format 1: { tokens: { access: '...', refresh: '...' }, user: {...} }
+    if (responseData.tokens && responseData.tokens.access) {
+      accessToken = responseData.tokens.access;
+      refreshToken = responseData.tokens.refresh;
+      userData = responseData.user;
+      console.log('✅ Found tokens in "tokens" object');
+    }
+    // Format 2: { access: '...', refresh: '...', user: {...} }
+    else if (responseData.access) {
+      accessToken = responseData.access;
+      refreshToken = responseData.refresh;
+      userData = responseData.user;
+      console.log('✅ Found tokens as direct properties');
+    }
+    // Format 3: { data: { tokens: {...}, user: {...} } }
+    else if (responseData.data && responseData.data.tokens) {
+      accessToken = responseData.data.tokens.access;
+      refreshToken = responseData.data.tokens.refresh;
+      userData = responseData.data.user;
+      console.log('✅ Found tokens in "data" object');
+    }
+    
+    // Save tokens if found
+    if (accessToken) {
+      console.log('💾 Saving tokens to localStorage...');
+      
+      // Save tokens
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+      
+      // Save user info if available
+      if (userData) {
+        localStorage.setItem('user_info', JSON.stringify(userData));
+      }
+      
+      // Set axios default header for future API calls
+      api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      
+      console.log('✅ Tokens saved successfully!');
+      console.log('Access token saved:', accessToken.substring(0, 20) + '...');
+      console.log('User data saved:', userData);
+      
+      return true;
+    }
+    
+    console.warn('⚠️ No tokens found in response');
+    return false;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -176,22 +234,41 @@ const TenantRegistration = () => {
         timeout: 30000,
       });
       
-      console.log('✅ Registration successful:', response.data);
+      console.log('✅ Registration API response:', response);
+      console.log('✅ Registration response data:', response.data);
       
       if (response.status === 200 || response.status === 201) {
-        setSuccess(true);
-        let successMessage = response.data.message || 'Registration successful! Awaiting admin approval.';
+        // ✅ FIXED: Save tokens from registration response
+        const tokensSaved = saveTokensAndRedirect(response.data);
         
-        // Add store URL if available
-        if (response.data.store_url) {
-          successMessage += ` Your store will be at: ${response.data.store_url}`;
+        if (tokensSaved) {
+          // Tokens were saved, user is now logged in
+          setSuccess(true);
+          setMessage('Registration successful! You are now logged in. Redirecting to dashboard...');
+          
+          // Redirect to dashboard after short delay
+          setTimeout(() => {
+            console.log('➡️ Redirecting to vendor dashboard...');
+            navigate('/vendor-dashboard');
+          }, 2000);
+        } else {
+          // No tokens in response (shouldn't happen with current backend)
+          setSuccess(true);
+          let successMessage = response.data.message || 'Registration successful!';
+          
+          // Add store URL if available
+          if (response.data.store_url) {
+            successMessage += ` Your store will be at: ${response.data.store_url}`;
+          }
+          
+          setMessage(successMessage + ' Please login with your credentials.');
+          
+          setTimeout(() => {
+            navigate('/login');
+          }, 4000);
         }
-        
-        setMessage(successMessage);
-        
-        setTimeout(() => {
-          navigate('/vendor-dashboard');
-        }, 4000);
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
       }
     } catch (error) {
       console.error('❌ Registration failed:', error);
@@ -206,6 +283,9 @@ const TenantRegistration = () => {
             .join('\n');
           alert(`Please fix the following errors:\n${errorList}`);
           setMessage(`Validation errors: ${errorList}`);
+        } else if (error.response.data.error) {
+          alert(`Registration failed: ${error.response.data.error}`);
+          setMessage(`Error: ${error.response.data.error}`);
         } else {
           const errorMsg = error.response.data.message || JSON.stringify(error.response.data);
           alert(`Registration failed: ${errorMsg}`);
@@ -578,38 +658,67 @@ const TenantRegistration = () => {
       <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🎉</div>
       <h3 style={{ color: '#2c3e50', marginBottom: '1rem' }}>Application Submitted!</h3>
       <p style={{ color: '#7f8c8d', marginBottom: '2rem', lineHeight: '1.6' }}>{message}</p>
-      <p style={{ fontWeight: 'bold', color: '#2c3e50', marginBottom: '1rem' }}>What happens next?</p>
-      <ul style={{ 
-        textAlign: 'left', 
-        maxWidth: '400px', 
-        margin: '0 auto 2rem',
-        color: '#7f8c8d',
-        lineHeight: '1.6'
-      }}>
-        <li style={{ marginBottom: '0.5rem' }}>We'll review your application within 24 hours</li>
-        <li style={{ marginBottom: '0.5rem' }}>You'll receive an email with approval status</li>
-        <li style={{ marginBottom: '0.5rem' }}>Once approved, you can start adding products to your store</li>
-        <li>You'll get access to your Tenant dashboard</li>
-      </ul>
-      <button 
-        style={buttonStyle}
-        onMouseEnter={(e) => e.target.style = buttonHoverStyle}
-        onMouseLeave={(e) => e.target.style = buttonStyle}
-        onClick={() => {
-          setStep(1);
-          setFormData({
-            name: '', subdomain: '', email: '', phone_number: '',
-            subscription_tier: 'basic', mpesa_business_shortcode: '', mpesa_account_number: '',
-            description: '', owner_name: '', business_registration: '', address: '',
-            password: '', confirm_password: ''
-          });
-          setMessage('');
-          setSuccess(false);
-        }}
-        type="button"
-      >
-        Register Another Store
-      </button>
+      
+      {success && message.includes('logged in') ? (
+        <div>
+          <p style={{ fontWeight: 'bold', color: '#27ae60', marginBottom: '1rem' }}>
+            ✅ You are now logged in and will be redirected to your dashboard...
+          </p>
+          <div style={{ 
+            width: '100%', 
+            height: '4px', 
+            background: '#ecf0f1',
+            borderRadius: '2px',
+            margin: '2rem 0'
+          }}>
+            <div style={{
+              width: '100%',
+              height: '100%',
+              background: '#2ecc71',
+              borderRadius: '2px',
+              animation: 'loading 2s linear infinite'
+            }}></div>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <p style={{ fontWeight: 'bold', color: '#2c3e50', marginBottom: '1rem' }}>What happens next?</p>
+          <ul style={{ 
+            textAlign: 'left', 
+            maxWidth: '400px', 
+            margin: '0 auto 2rem',
+            color: '#7f8c8d',
+            lineHeight: '1.6'
+          }}>
+            <li style={{ marginBottom: '0.5rem' }}>We'll review your application within 24 hours</li>
+            <li style={{ marginBottom: '0.5rem' }}>You'll receive an email with approval status</li>
+            <li style={{ marginBottom: '0.5rem' }}>Once approved, you can start adding products to your store</li>
+            <li>You'll get access to your Tenant dashboard</li>
+          </ul>
+        </div>
+      )}
+      
+      {!message.includes('logged in') && (
+        <button 
+          style={buttonStyle}
+          onMouseEnter={(e) => e.target.style = buttonHoverStyle}
+          onMouseLeave={(e) => e.target.style = buttonStyle}
+          onClick={() => {
+            setStep(1);
+            setFormData({
+              name: '', subdomain: '', email: '', phone_number: '',
+              subscription_tier: 'basic', mpesa_business_shortcode: '', mpesa_account_number: '',
+              description: '', owner_name: '', business_registration: '', address: '',
+              password: '', confirm_password: ''
+            });
+            setMessage('');
+            setSuccess(false);
+          }}
+          type="button"
+        >
+          Register Another Store
+        </button>
+      )}
     </div>
   );
 
@@ -670,13 +779,13 @@ const TenantRegistration = () => {
       {success && (
         <div style={{
           padding: '1rem',
-          background: '#d4edda',
-          color: '#155724',
+          background: message.includes('logged in') ? '#d4edda' : '#fff3cd',
+          color: message.includes('logged in') ? '#155724' : '#856404',
           borderRadius: '4px',
           marginBottom: '1rem',
-          border: '1px solid #c3e6cb'
+          border: message.includes('logged in') ? '1px solid #c3e6cb' : '1px solid #ffeeba'
         }}>
-          ✅ {message}
+          {message.includes('logged in') ? '✅ ' : '⚠️ '}{message}
         </div>
       )}
 
@@ -700,6 +809,17 @@ const TenantRegistration = () => {
         {step === 4 && renderStep4()}
         {step === 5 && renderStep5()}
       </form>
+
+      {/* Add CSS for loading animation */}
+      <style>
+        {`
+          @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 50%; }
+            100% { width: 100%; }
+          }
+        `}
+      </style>
     </div>
   );
 };

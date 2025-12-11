@@ -22,31 +22,48 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.username || !formData.password) {
-      setError('Please fill in all fields');
-      return;
+  e.preventDefault();
+  
+  if (!formData.username || !formData.password) {
+    setError('Please fill in all fields');
+    return;
+  }
+
+  setLoading(true);
+  setError('');
+
+  // Try login
+  const result = await login(formData.username, formData.password);
+
+  if (result.success) {
+    // Check if user has vendor access
+    if (result.user.user_type === 'vendor' || result.user.is_vendor) {
+      navigate('/vendor-dashboard');
+    } else {
+      navigate('/');
     }
-
-    setLoading(true);
-    setError('');
-
-    const result = await login(formData.username, formData.password);
-
-    if (result.success) {
-      const userType = result.user?.user_type;
-      if (userType === 'vendor') {
-        navigate('/vendor-dashboard');
+  } else {
+    // Try with email if username fails
+    if (result.error.includes('credentials')) {
+      console.log('🔄 Trying with email instead...');
+      const emailResult = await login(formData.username, formData.password);
+      
+      if (emailResult.success) {
+        if (emailResult.user.user_type === 'vendor') {
+          navigate('/vendor-dashboard');
+        } else {
+          navigate('/');
+        }
       } else {
-        navigate('/');
+        setError('Invalid email/username or password');
       }
     } else {
       setError(result.error);
     }
-    
-    setLoading(false);
-  };
+  }
+  
+  setLoading(false);
+};
 
   return (
     <div style={styles.container}>

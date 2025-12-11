@@ -21,61 +21,104 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkAuthStatus = async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-      const userInfo = localStorage.getItem('user_info');
-      
-      if (token && userInfo) {
-        setUser(JSON.parse(userInfo));
-        setIsAuthenticated(true);
-        
-        // Optional: Verify token is still valid by making an API call
-        try {
-          await api.get('/api/users/profile/');
-        } catch (error) {
-          console.log('Token validation failed, logging out');
-          logout();
-        }
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      logout();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const login = async (username, password) => {
-    try {
-      console.log('🔄 Attempting login...');
-      const response = await api.post('/api/users/login/', {
-        username: username,
-        password: password
-      });
-      
-      console.log('✅ Login response:', response.data);
-      const { user, access, refresh } = response.data;
-      
-      // Store tokens and user info
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
-      localStorage.setItem('user_info', JSON.stringify(user));
-      
+  try {
+    const token = localStorage.getItem('access_token');
+    const userInfo = localStorage.getItem('user_info');
+    
+    if (token && userInfo) {
+      const user = JSON.parse(userInfo);
       setUser(user);
       setIsAuthenticated(true);
       
-      return { success: true, user };
-    } catch (error) {
-      console.error('❌ Login error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || 
-               error.response?.data?.detail || 
-               error.response?.data?.message || 
-               'Login failed' 
-      };
+      // Set axios header
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      // Optional: Verify token is still valid
+      try {
+        await api.get('/api/users/profile/');
+      } catch (error) {
+        console.log('Token validation failed:', error.message);
+        // Don't logout immediately, token might still be valid
+      }
     }
-  };
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    // Don't auto-logout on error
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // In AuthContext.jsx, update the login function:
+
+  const login = async (username, password) => {
+  try {
+    console.log('🔄 Attempting login...');
+    
+    // Try with username first
+    const response = await api.post('/api/users/login/', {
+      username: username,
+      password: password
+    });
+    
+    console.log('✅ Login response:', response.data);
+    
+    // ✅ FIXED: Handle the ACTUAL format from your login endpoint
+    const { user, access, refresh } = response.data;
+    
+    if (!access || !user) {
+      throw new Error('Invalid response format from login');
+    }
+    
+    // Store tokens and user info
+    localStorage.setItem('access_token', access);
+    localStorage.setItem('refresh_token', refresh);
+    localStorage.setItem('user_info', JSON.stringify(user));
+
+    api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+    
+    setUser(user);
+    setIsAuthenticated(true);
+    
+    return { success: true, user };
+    
+  } catch (error) {
+    console.error('❌ Login error:', error.response?.data || error.message);
+    
+    // Try with email if username fails
+    if (error.response?.status === 401) {
+      console.log('🔄 Trying login with email field...');
+      try {
+        const retryResponse = await api.post('/api/users/login/', {
+          email: username,  // Try email instead
+          password: password
+        });
+        
+        const { user, access, refresh } = retryResponse.data;
+        
+        localStorage.setItem('access_token', access);
+        localStorage.setItem('refresh_token', refresh);
+        localStorage.setItem('user_info', JSON.stringify(user));
+        api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+        
+        setUser(user);
+        setIsAuthenticated(true);
+        return { success: true, user };
+        
+      } catch (retryError) {
+        console.error('❌ Retry login error:', retryError.response?.data);
+      }
+    }
+    
+    return { 
+      success: false, 
+      error: error.response?.data?.error || 
+             error.response?.data?.detail || 
+             error.response?.data?.message || 
+             'Login failed. Please check your credentials.' 
+    };
+  }
+};
 
   const register = async (userData) => {
     try {
