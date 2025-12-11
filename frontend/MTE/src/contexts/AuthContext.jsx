@@ -3,168 +3,112 @@ import api from '../services/api';
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-  try {
+  // ✅ SIMPLE: Check if user is logged in
+  const checkAuth = () => {
     const token = localStorage.getItem('access_token');
     const userInfo = localStorage.getItem('user_info');
     
     if (token && userInfo) {
-      const user = JSON.parse(userInfo);
-      setUser(user);
-      setIsAuthenticated(true);
-      
-      // Set axios header
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      // Optional: Verify token is still valid
       try {
-        await api.get('/api/users/profile/');
-      } catch (error) {
-        console.log('Token validation failed:', error.message);
-        // Don't logout immediately, token might still be valid
-      }
-    }
-  } catch (error) {
-    console.error('Auth check failed:', error);
-    // Don't auto-logout on error
-  } finally {
-    setLoading(false);
-  }
-};
-
-  // In AuthContext.jsx, update the login function:
-
-  const login = async (username, password) => {
-  try {
-    console.log('🔄 Attempting login...');
-    
-    // Try with username first
-    const response = await api.post('/api/users/login/', {
-      username: username,
-      password: password
-    });
-    
-    console.log('✅ Login response:', response.data);
-    
-    // ✅ FIXED: Handle the ACTUAL format from your login endpoint
-    const { user, access, refresh } = response.data;
-    
-    if (!access || !user) {
-      throw new Error('Invalid response format from login');
-    }
-    
-    // Store tokens and user info
-    localStorage.setItem('access_token', access);
-    localStorage.setItem('refresh_token', refresh);
-    localStorage.setItem('user_info', JSON.stringify(user));
-
-    api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-    
-    setUser(user);
-    setIsAuthenticated(true);
-    
-    return { success: true, user };
-    
-  } catch (error) {
-    console.error('❌ Login error:', error.response?.data || error.message);
-    
-    // Try with email if username fails
-    if (error.response?.status === 401) {
-      console.log('🔄 Trying login with email field...');
-      try {
-        const retryResponse = await api.post('/api/users/login/', {
-          email: username,  // Try email instead
-          password: password
-        });
-        
-        const { user, access, refresh } = retryResponse.data;
-        
-        localStorage.setItem('access_token', access);
-        localStorage.setItem('refresh_token', refresh);
-        localStorage.setItem('user_info', JSON.stringify(user));
-        api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-        
+        const user = JSON.parse(userInfo);
         setUser(user);
-        setIsAuthenticated(true);
-        return { success: true, user };
-        
-      } catch (retryError) {
-        console.error('❌ Retry login error:', retryError.response?.data);
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      } catch (error) {
+        console.error('Error parsing user info:', error);
+        logout();
       }
     }
-    
-    return { 
-      success: false, 
-      error: error.response?.data?.error || 
-             error.response?.data?.detail || 
-             error.response?.data?.message || 
-             'Login failed. Please check your credentials.' 
-    };
-  }
-};
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  // ✅ SIMPLE: Login function
+  const login = async (username, password) => {
+    try {
+      const response = await api.post('/api/users/login/', {
+        username: username,
+        password: password
+      });
+      
+      const { user, access, refresh } = response.data;
+      
+      // ✅ ALWAYS ADD is_vendor FLAG IF MISSING
+      const enhancedUser = {
+        ...user,
+        is_vendor: user.is_vendor_admin || user.is_vendor_staff || false,
+        user_type: (user.is_vendor_admin || user.is_vendor_staff) ? 'vendor' : 'customer'
+      };
+      
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem('user_info', JSON.stringify(enhancedUser));
+      
+      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      setUser(enhancedUser);
+      
+      return { success: true, user: enhancedUser };
+      
+    } catch (error) {
+      console.error('Login error:', error.response?.data || error.message);
+      return { 
+        success: false, 
+        error: error.response?.data?.error || 'Login failed' 
+      };
+    }
+  };
+
+  const logout = () => {
+    localStorage.clear();
+    delete api.defaults.headers.common['Authorization'];
+    setUser(null);
+  };
 
   const register = async (userData) => {
     try {
-      console.log('🔄 Attempting registration...');
       const response = await api.post('/api/users/register/', userData);
-      
-      console.log('✅ Registration response:', response.data);
       const { user, access, refresh } = response.data;
       
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
       localStorage.setItem('user_info', JSON.stringify(user));
       
+      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
       setUser(user);
-      setIsAuthenticated(true);
       
       return { success: true, user };
     } catch (error) {
-      console.error('❌ Registration error:', error);
-      return { 
-        success: false, 
-        error: error.response?.data || 'Registration failed' 
-      };
+      return { success: false, error: error.response?.data };
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_info');
-    setUser(null);
-    setIsAuthenticated(false);
-  };
-
-  const value = {
-    user,
-    loading,
-    isAuthenticated,
-    login,
-    register,
-    logout,
-    checkAuthStatus
+  // ✅ SIMPLE: Check if user is vendor
+  const isVendor = () => {
+    if (!user) return false;
+    return user.is_vendor === true || 
+           user.is_vendor_admin === true || 
+           user.is_vendor_staff === true ||
+           user.user_type === 'vendor';
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      logout,
+      register,
+      isVendor: isVendor(),
+      isAuthenticated: !!user
+    }}>
       {children}
     </AuthContext.Provider>
   );
