@@ -71,7 +71,18 @@ class UserViewSet(viewsets.ModelViewSet):
                 
                 return Response({
                     'message': 'Login successful',
-                    'user': UserSerializer(user).data,
+                    'user':{
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'is_vendor_admin': user.is_vendor_admin,
+                        'is_vendor_staff': user.is_vendor_staff,
+                        'is_vendor_customer': user.is_vendor_customer,
+                        'is_vendor': user.is_vendor_admin or user.is_vendor_staff or user.is_vendor_customer,
+                        'user_type': 'vendor' if (user.is_vendor_admin or user.is_vendor_staff ) else 'customer',
+                    },
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                 })

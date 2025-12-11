@@ -73,13 +73,18 @@ def register_tenant(request):
                     password=user_data['password'],
                     first_name=user_data.get('owner_name', '').split(' ')[0],
                     last_name=' '.join(user_data.get('owner_name', '').split(' ')[1:]),
+                    is_vendor_admin=True,
+                    is_vendor_staff=False,
+                    is_vendor_customer=False,
                 )
                 
                 # Link tenant to user
                 tenant.owner_email = user.email
                 tenant.save()
                 
+                
                 print(f"✅ User account created: {user.email}")
+
                 
             except Exception as user_error:
                 print(f"❌ User creation failed: {user_error}")
@@ -106,6 +111,10 @@ def register_tenant(request):
                     'username': user.username,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
+                    'is_vendor_admin': user.is_vendor_admin,
+                    'is_vendor_staff': user.is_vendor_staff,
+                    'is_vendor_customer': user.is_vendor_customer,
+                    'is_vendor': True,
                     'user_type': 'vendor'
                 }
             }, status=status.HTTP_201_CREATED)
