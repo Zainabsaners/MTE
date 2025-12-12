@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // ✅ Add React and useState
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const VendorDashboardGuard = ({ children }) => {
   const navigate = useNavigate();
   const { isAuthenticated, loading, user } = useAuth();
-  const [hasStore, setHasStore] = useState(null);
+  const [hasStore, setHasStore] = useState(null); // ✅ Now useState is defined
   
   useEffect(() => {
     const checkStoreAccess = async () => {
