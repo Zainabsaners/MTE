@@ -7,7 +7,7 @@ const ImageUpload = ({
   label = "Product Image",
   uploadMethod = 'backend', // 'backend' or 'cloudinary'
   cloudName = 'dwotnbvhz', // Your Cloudinary cloud name
-  uploadPreset = 'ML image' // Your Cloudinary upload preset
+  uploadPreset = 'MTE uploads' // Your Cloudinary upload preset
 }) => {
   const [previewUrl, setPreviewUrl] = useState(currentImage || '');
   const [isDragging, setIsDragging] = useState(false);
@@ -23,14 +23,21 @@ const ImageUpload = ({
     setUploadProgress(0);
 
     try {
+      console.log('🔄 Starting Cloudinary upload...');
+      console.log('Cloud Name:', cloudName);
+      console.log('Upload Preset:', uploadPreset);
+      console.log('File:', file.name, file.type, file.size);
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', uploadPreset);
-      formData.append('cloud_name', cloudName);
-      formData.append('folder', 'products');
+      
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+      console.log('Upload URL:', uploadUrl);
+
 
       const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        uploadUrl,
         formData,
         {
           onUploadProgress: (progressEvent) => {
@@ -39,11 +46,9 @@ const ImageUpload = ({
             );
             setUploadProgress(percentCompleted);
           },
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
         }
       );
+      console.log('✅ Cloudinary Response:', response.data);
 
       if (response.data.secure_url) {
         const url = response.data.secure_url;
@@ -59,6 +64,16 @@ const ImageUpload = ({
       }
     } catch (error) {
       console.error('❌ Cloudinary upload error:', error);
+      console.error('Status:', error.response?.status);
+      console.error('Data:', error.response?.data);
+      console.error('Headers:', error.response?.headers);
+      console.error('Full Error:', error);
+
+      if (error.response?.data?.error?.message) {
+        alert(`Cloudinary Error: ${error.response.data.error.message}`);
+      } else {
+        alert('Failed to upload image. Please check console for details.');
+      }
       throw error;
     } finally {
       setUploading(false);
