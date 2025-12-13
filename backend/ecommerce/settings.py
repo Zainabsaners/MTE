@@ -108,13 +108,12 @@ else:
     }
     print("⚠️ Using SQLite (for local testing only)")
 
-# Cloudinary configuration
+# Cloudinary Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config(' dwotnbvhz', ''),
-    'API_KEY': config('	584391927331488', ''),
-    'API_SECRET': config('XQN4nXNzoJsT1ypfw9KU6M7jgEQ', ''),
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', 'dwotnbvhz'),  # Default value
+    'API_KEY': config('CLOUDINARY_API_KEY', '584391927331488'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET', 'XQN4nXNzoJsT1ypfw9KU6M7jgEQ'),
 }
-
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Password validation
