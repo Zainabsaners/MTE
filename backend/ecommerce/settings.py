@@ -110,9 +110,9 @@ else:
 
 # Cloudinary Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', 'dwotnbvhz'),  # Default value
-    'API_KEY': config('CLOUDINARY_API_KEY', '584391927331488'),
-    'API_SECRET': config('CLOUDINARY_API_SECRET', 'XQN4nXNzoJsT1ypfw9KU6M7jgEQ'),
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', 'dg7gwfpck'),  # Default value
+    'API_KEY': config('CLOUDINARY_API_KEY', '451253526168676'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET', 'dH1zrJUqN-UgQ3LxXv8po5jJQW8'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -211,3 +211,19 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to my project Admin",
     "copyright": "zainab © 2025",
 }
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+# Initialize Cloudinary
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+    secure=True
+)
+
+print(f"✅ Cloudinary Successfully Configured!")
+print(f"   Cloud Name: {CLOUDINARY_STORAGE['CLOUD_NAME']}")
+print(f"   Using Storage: {DEFAULT_FILE_STORAGE}")
