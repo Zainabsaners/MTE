@@ -5,9 +5,9 @@ const ImageUpload = ({
   onImageChange, 
   currentImage, 
   label = "Product Image",
-  uploadMethod = 'backend', // 'backend' or 'cloudinary'
-  cloudName = 'dwotnbvhz', // Your Cloudinary cloud name
-  uploadPreset = 'MTE uploads' // Your Cloudinary upload preset
+  uploadMethod = 'cloudinary', // 'backend' or 'cloudinary'
+  cloudName = 'dg7gwfpck', // Your Cloudinary cloud name
+  uploadPreset = 'ecommerce_uploads' // Your Cloudinary upload preset
 }) => {
   const [previewUrl, setPreviewUrl] = useState(currentImage || '');
   const [isDragging, setIsDragging] = useState(false);
