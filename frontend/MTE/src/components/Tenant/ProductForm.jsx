@@ -440,8 +440,8 @@ const handleSubmit = async (e) => {
             currentImage={product?.image_url || product?.image}
             label="Product Image"
             uploadMethod="cloudinary"
-            cloudName="dwotnbvhz"
-            uploadPreset="ecommerce_uploads"
+            cloudName="dg7gwfpck"
+            uploadPreset="eccomerce_uploads"
           />
           {errors.image && (
             <div style={{
