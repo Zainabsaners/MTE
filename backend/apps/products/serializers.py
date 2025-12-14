@@ -31,15 +31,23 @@ class ProductSerializer(serializers.ModelSerializer):
         return True
     def get_image_url(self, obj):
         if obj.image:
-            return CloudinaryImage(str(obj.image)).build_url(
-                width=800,
-                height=600,
-                crop="fill",
-                quality="auto",
-                format="webp"
-            )
+            try:
+                full_url = str(obj.image.public_id)
+                clean_public_id = full_url.rsplit('/', 1)[-1]
+                return CloudinaryImage(clean_public_id).build_url(
+                    width=800,
+                    height=600,
+                    crop="fill",
+                    quality="auto",
+                    format="auto",
+                    fetch_format="auto"
+                )
+            except Exception as e:
+                if hasattr(obj.image, 'url'):
+                   return obj.image.url
+                return None
         return None
-        return None
+        
 
 class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
