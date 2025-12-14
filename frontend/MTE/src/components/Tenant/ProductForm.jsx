@@ -13,10 +13,12 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     tenant: product?.tenant || '',
     is_featured: product?.is_featured || false,
     status: product?.status || 'draft',
+    image_url: product?.image_url || '',
     ...product
   });
   
   const [imageFile, setImageFile] = useState(null);
+  const [cloudinaryImageId, setCloudinaryImageId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -140,6 +142,11 @@ const handleSubmit = async (e) => {
     setLoading(false);
     return;
   }
+  console.log('🔍 Form Data before submission:', {
+    image_url: formData.image_url,
+    cloudinary_image_id: cloudinaryImageId,
+    has_image_file: !!imageFile
+  });
 
   try {
     const submitData = new FormData();
@@ -164,10 +171,18 @@ const handleSubmit = async (e) => {
     }
 
     // ✅ APPEND IMAGE FOR CLOUDINARY UPLOAD
-    if (imageFile) {
+    if (formData.image_url && formData.image_url.trim() !== '') {
+      submitData.append('image', formData.image_url);
+      console.log('✅ Adding Cloudinary URL to FormData:', formData.image_url);
+
+       if (cloudinaryImageId) {
+         submitData.append('cloudinary_public_id', cloudinaryImageId);
+        } 
+      } else if (imageFile) {
       submitData.append('image', imageFile);
-      console.log('✅ Adding image to FormData for Cloudinary upload');
+      console.log('⚠️ Using file upload (Cloudinary URL not available)');
     }
+
 
     // ✅ DEBUG: Log all FormData entries
     console.log('📦 FormData entries for Cloudinary upload:');
@@ -432,9 +447,13 @@ const handleSubmit = async (e) => {
                 // its a cloudinary URL
                 setFormData(prev => ({ ...prev, image_url: fileOrUrl}));
                 setCloudinaryImageId(cloudinaryId);
+                console.log('✅ Cloudinary URL saved to form:', fileOrUrl);
+                console.log('✅ Cloudinary Public ID saved:', cloudinaryId);
               } else {
                 // its a file object
                 setImageFile(fileOrUrl);
+                setFormData(prev => ({ ...prev, image_url: '' }));
+                setCloudinaryImageId(null); 
               }
             }}
             currentImage={product?.image_url || product?.image}
