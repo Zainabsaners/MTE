@@ -13,7 +13,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     tenant: product?.tenant || '',
     is_featured: product?.is_featured || false,
     status: product?.status || 'draft',
-    image_url: product?.image_url || '',
+    image_url: product?.image_url || '/placeholder.jpg',
     ...product
   });
   
