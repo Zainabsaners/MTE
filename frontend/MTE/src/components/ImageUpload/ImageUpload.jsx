@@ -63,11 +63,10 @@ const ImageUpload = ({
         return url;
       }
     } catch (error) {
-      console.error('❌ Cloudinary upload error:', error);
-      console.error('Status:', error.response?.status);
-      console.error('Data:', error.response?.data);
-      console.error('Headers:', error.response?.headers);
-      console.error('Full Error:', error);
+        console.error('❌ Detailed Cloudinary Error:');
+        console.error('Response Status:', error.response?.status);
+        console.error('Response Data:', error.response?.data);
+        console.error('Response Headers:', error.response?.headers);
 
       if (error.response?.data?.error?.message) {
         alert(`Cloudinary Error: ${error.response.data.error.message}`);
