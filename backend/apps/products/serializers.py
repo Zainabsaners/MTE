@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Category, Product
 from cloudinary.models import CloudinaryField 
 from cloudinary import CloudinaryImage
+from django.conf import settings
 
 class CategorySerializer(serializers.ModelSerializer):
     Product_count = serializers.SerializerMethodField()
@@ -32,9 +33,16 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_image_url(self, obj):
         if obj.image:
             try:
-                full_url = str(obj.image.public_id)
+                full_url = obj.image.public_id
                 clean_public_id = full_url.rsplit('/', 1)[-1]
-                return CloudinaryImage(clean_public_id).build_url(
+                cloudinary_img = CloudinaryImage(
+                    clean_public_id,
+                    cloud_name='dg7gwfpck',
+                    api_key=settings.CLOUDINARY_STORAGE['API_KEY'],
+                    api_secret=settings.CLOUDINARY_STORAGE['API_SECRET']
+                )
+                                                 
+                return cloudinary_img.build_url(
                     width=800,
                     height=600,
                     crop="fill",
@@ -43,9 +51,8 @@ class ProductSerializer(serializers.ModelSerializer):
                     fetch_format="auto"
                 )
             except Exception as e:
-                if hasattr(obj.image, 'url'):
-                   return obj.image.url
-                return None
+                print(f"⚠️ Image transformation failed: {e}")
+                return obj.image.url if hasattr(obj.image, 'url') else None
         return None
         
 
