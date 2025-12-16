@@ -63,11 +63,22 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ['id','sku','barcode', 'created_at', 'updated_at']
     
     def create(self, validated_data):
-        image = validated_data.pop('image', None)
+        image_url = validated_data.pop('image', None)
         product = Product.objects.create(**validated_data)
-        if image:
-            product.image = image
-            product.save()
+        if image_url and isinstance(image_url, str):
+            try:
+                import re
+                match = re.search(r'/upload/(?:v\d+/)?([^/.]+)', image_url)
+
+                if match:
+                    public_id = match.group(1)
+                    from cloudinary.models import CloudinaryResource
+                    product.image = CloudinaryResource(public_id=public_id)
+
+                    product.save()
+            except Exception as e:
+                print(f"⚠️ Failed to process Cloudinary URL: {e}")
+            
         return product
 
     def validate_sku(self, value):
