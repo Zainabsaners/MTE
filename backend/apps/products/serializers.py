@@ -33,29 +33,17 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_image_url(self, obj):
         if obj.image:
             try:
-                full_url = obj.image.public_id
-                clean_public_id = full_url.rsplit('/', 1)[-1]
-                cloudinary_img = CloudinaryImage(
-                    clean_public_id,
-                    cloud_name='dg7gwfpck',
-                    api_key=settings.CLOUDINARY_STORAGE['API_KEY'],
-                    api_secret=settings.CLOUDINARY_STORAGE['API_SECRET']
-                )
-                                                 
-                return cloudinary_img.build_url(
-                    width=800,
-                    height=600,
-                    crop="fill",
-                    quality="auto",
-                    format="auto",
-                    fetch_format="auto"
-                )
+                if hasattr(obj.image, 'url'):
+                    return obj.image.url
+                elif isinstance(obj.image, str):
+                    if obj.image.startswith('http'):
+                        return obj.image
+                    
             except Exception as e:
-                print(f"⚠️ Image transformation failed: {e}")
-                return obj.image.url if hasattr(obj.image, 'url') else None
-        return None
-        
-
+                print(f"⚠️ Simple image_url failed: {e}")
+                return None
+            return None      
+                                                 
 class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -72,12 +60,14 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 
                 if match:
                     public_id = match.group(1)
-                    from cloudinary.models import CloudinaryResource
-                    product.image = CloudinaryResource(public_id=public_id)
-
+                    print(f"✅ Extracted Cloudinary public_id: {public_id}")
+                    product.image = public_id
                     product.save()
+                    print(f"✅ Image set successfully: {product.image}")
             except Exception as e:
                 print(f"⚠️ Failed to process Cloudinary URL: {e}")
+                import traceback
+                traceback.print_exc()
             
         return product
 
