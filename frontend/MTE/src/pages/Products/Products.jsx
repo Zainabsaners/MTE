@@ -622,23 +622,20 @@ const ProductCard = ({ product }) => {
 
   // Enhanced image handling - check multiple possible image fields
   const getProductImage = () => {
-    // Check various possible image fields in order of priority
-    const imageSources = [
-      product.image, // Direct image field
-      product.image_url, // image_url field
-      product.thumbnail, // thumbnail field
-      product.images?.[0]?.image, // First image in images array
-      product.images?.[0]?.image_url, // First image_url in images array
-      product.product_images?.[0]?.image, // First product image
-      product.product_images?.[0]?.image_url, // First product image URL
-    ];
+    if (product.image_url && typeof product.image_url === 'string') {
+    return product.image_url;
+    }
 
-    // Find the first valid image source
-    const validImage = imageSources.find(src => 
-      src && typeof src === 'string' && src.trim() !== ''
-    );
+    if(product.image && typeof product.image === 'string') {
+      if (product.image.startswith('image/upload/https://')){
+        console.warn(`⚠️ Using broken image field for ${product.name}: ${product.image}`);
+        const fixedurl = product.image.replace('image/upload/', '');
+        return fixedurl;
+      }
+      return product.image;
+    }
 
-    return validImage || null;
+    return null;
   };
 
   const productImage = getProductImage();
