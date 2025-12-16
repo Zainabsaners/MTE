@@ -45,17 +45,10 @@ export const productService = {
     return await api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`);
   },
 
-  // Alternative vendor endpoint
-  getVendorProducts: async (vendorSubdomain) => {
-    return await api.get(`/api/products/vendor/${vendorSubdomain}/`);
-  },
-
     // Simple filter
   getProductsWithVendorFilter: async (vendorSubdomain) => {
     return await api.get(`/api/products/products/?vendor=${vendorSubdomain}`);
   },
-
-
 
   // ✅ UPDATE PRODUCT WITH CLOUDINARY UPLOAD (UPDATED)
   updateProduct: async (productId, productData) => {
