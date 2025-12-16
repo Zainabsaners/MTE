@@ -30,6 +30,33 @@ export const productService = {
     });
   },
 
+   // Get products by tenant ID
+  getProductsByTenant: async (tenantId) => {
+    return await api.get(`/api/products/by_tenant/${tenantId}/`);
+  },
+
+  // Get products by vendor subdomain
+  getProductsByVendorSubdomain: async (vendorSubdomain) => {
+    return await api.get(`/api/products/by_vendor/${vendorSubdomain}/`);
+  },
+
+  // Get products for vendor (query param)
+  getProductsForVendor: async (vendorSubdomain) => {
+    return await api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`);
+  },
+
+  // Alternative vendor endpoint
+  getVendorProducts: async (vendorSubdomain) => {
+    return await api.get(`/api/products/vendor/${vendorSubdomain}/`);
+  },
+
+    // Simple filter
+  getProductsWithVendorFilter: async (vendorSubdomain) => {
+    return await api.get(`/api/products/products/?vendor=${vendorSubdomain}`);
+  },
+
+
+
   // ✅ UPDATE PRODUCT WITH CLOUDINARY UPLOAD (UPDATED)
   updateProduct: async (productId, productData) => {
     return await api.patch(`/api/products/products/${productId}/`, productData, {

@@ -150,6 +150,22 @@ export const productAPI = {
   
   getCategories: () => 
     api.get('/api/products/categories/'),
+
+  getProductsByVendorSubdomain: (vendorSubdomain) => 
+    api.get(`/api/products/by_vendor/${vendorSubdomain}/`),
+
+  getProductsByTenant: (tenantId) => 
+    api.get(`/api/products/by_tenant/${tenantId}/`),
+
+  getProductsForVendor: (vendorSubdomain) => 
+    api.get(`/api/products/for_vendor/?vendor=${vendorSubdomain}`),
+
+  getVendorProducts: (vendorSubdomain) => 
+    api.get(`/api/products/vendor/${vendorSubdomain}/`),
+   
+  getProductsWithVendorFilter: (vendorSubdomain) => 
+    api.get(`/api/products/products/?vendor=${vendorSubdomain}`),
+
   
   createProduct: (productData, config = {}) => {
     return api.post('/api/products/products/', productData, {
