@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../services/api';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -9,6 +10,36 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+// ✅ Function to get CSRF token from cookies
+  const getCSRFToken = () => {
+    const name = 'csrftoken';
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name + '='))
+      ?.split('=')[1];
+    return cookieValue;
+  };
+
+  // ✅ Function to setup CSRF token before login
+  const setupCSRF = async () => {
+    try {
+      console.log('🔄 Setting up CSRF token...');
+      
+      // Make a simple GET request to get CSRF cookie
+      const response = await axios.get('https://ecommerce-backend-xz2q.onrender.com/api/products/', {
+        withCredentials: true,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      console.log('✅ CSRF setup response status:', response.status);
+      return getCSRFToken();
+    } catch (error) {
+      console.warn('⚠️ CSRF setup may have failed:', error.message);
+      return null;
+    }
+  };
   // ✅ SIMPLE: Check if user is logged in
   const checkAuth = () => {
     const token = localStorage.getItem('access_token');
@@ -34,10 +65,35 @@ export const AuthProvider = ({ children }) => {
   // ✅ SIMPLE: Login function
   const login = async (username, password) => {
     try {
-      const response = await api.post('/api/users/login/', {
+      console.log('🔄 Step 1: Setting up CSRF for login...');
+
+      // First, get CSRF token by making a GET request
+      const csrfToken = await setupCSRF();
+      console.log('🔑 CSRF Token obtained:', csrfToken ? 'Yes' : 'No');
+
+       // Get current CSRF token from cookies
+      const currentCsrfToken = getCSRFToken();
+      console.log('🍪 Current CSRF from cookies:', currentCsrfToken);
+      
+      console.log('🔄 Step 2: Attempting login...');
+
+      const response = await axios.post(
+        'https://ecommerce-backend-xz2q.onrender.com/api/users/login/',
+        {
         username: username,
         password: password
-      });
+        },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFToken': currentCsrfToken || csrfToken
+          }
+        }
+      );
+      console.log('✅ Login response status:', response.status);
+      console.log('✅ Login response data:', response.data);
       
       const { user, access, refresh } = response.data;
       
@@ -58,10 +114,26 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: enhancedUser };
       
     } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
+      console.error('❌ Login error details:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+        headers: error.response?.headers
+      });
+      let errorMessage = 'Login failed';
+      if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      } else if (error.response?.data?.error){
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.non_field_errors){
+        errorMessage = error.response.data.non_field_errors[0];
+      }
+      
+      
       return { 
         success: false, 
-        error: error.response?.data?.error || 'Login failed' 
+        error: errorMessage,
+        status: error.response?.status
       };
     }
   };
@@ -74,7 +146,22 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await api.post('/api/users/register/', userData);
+      await setupCSRF();
+      const csrfToken = getCSRFToken();
+      const response = await axios.post(
+        'https://ecommerce-backend-xz2q.onrender.com/api/users/register/',
+        userData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFToken': csrfToken
+          }
+        }
+      );
+      console.log('✅ Registration response status:', response.status);
+      console.log('✅ Registration response data:', response.data);
       const { user, access, refresh } = response.data;
       
       localStorage.setItem('access_token', access);
@@ -86,7 +173,9 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user };
     } catch (error) {
-      return { success: false, error: error.response?.data };
+       console.error('Registration error:', error.response?.data || error.message);
+
+      return { success: false, error: error.response?.data || error.message};
     }
   };
 
@@ -107,7 +196,8 @@ export const AuthProvider = ({ children }) => {
       logout,
       register,
       isVendor: isVendor(),
-      isAuthenticated: !!user
+      isAuthenticated: !!user,
+      getCSRFToken
     }}>
       {children}
     </AuthContext.Provider>
