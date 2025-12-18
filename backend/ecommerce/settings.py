@@ -90,23 +90,43 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 # Database Configuration - PRODUCTION READY
-DATABASE_URL = config('DATABASE_URL', default=None)
+#DATABASE_URL = config('DATABASE_URL', default=None)
 
-if DATABASE_URL:
+#if DATABASE_URL:
     # PRODUCTION - Use Railway MySQL
+   # DATABASES = {
+    #    'default': dj_database_url.parse(DATABASE_URL)
+    #}
+    #print(f"✅ Using Production Database: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else DATABASE_URL[:50]}...")
+#else:
+    # FALLBACK - Use SQLite for local testing only
+   # DATABASES = {
+    #    'default': {
+    #        'ENGINE': 'django.db.backends.sqlite3',
+    #        'NAME': BASE_DIR / 'db.sqlite3',
+    #    }
+   # }
+   # print("⚠️ Using SQLite (for local testing only)")
+
+DATABASE_URL = config('DATABASE_URL', default=None) 
+if DATABASE_URL:
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
     print(f"✅ Using Production Database: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else DATABASE_URL[:50]}...")
 else:
-    # FALLBACK - Use SQLite for local testing only
+    # Fallback for local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    print("⚠️ Using SQLite (for local testing only)")
+
 
 # Cloudinary Configuration
 CLOUDINARY_STORAGE = {

@@ -1,0 +1,2483 @@
+{
+  "auth_group": {
+    "columns": [
+      "id",
+      "name"
+    ],
+    "data": []
+  },
+  "auth_group_permissions": {
+    "columns": [
+      "id",
+      "group_id",
+      "permission_id"
+    ],
+    "data": []
+  },
+  "auth_permission": {
+    "columns": [
+      "id",
+      "name",
+      "content_type_id",
+      "codename"
+    ],
+    "data": [
+      {
+        "id": 1,
+        "name": "Can add log entry",
+        "content_type_id": 1,
+        "codename": "add_logentry"
+      },
+      {
+        "id": 2,
+        "name": "Can change log entry",
+        "content_type_id": 1,
+        "codename": "change_logentry"
+      },
+      {
+        "id": 3,
+        "name": "Can delete log entry",
+        "content_type_id": 1,
+        "codename": "delete_logentry"
+      },
+      {
+        "id": 4,
+        "name": "Can view log entry",
+        "content_type_id": 1,
+        "codename": "view_logentry"
+      },
+      {
+        "id": 5,
+        "name": "Can add permission",
+        "content_type_id": 2,
+        "codename": "add_permission"
+      },
+      {
+        "id": 6,
+        "name": "Can change permission",
+        "content_type_id": 2,
+        "codename": "change_permission"
+      },
+      {
+        "id": 7,
+        "name": "Can delete permission",
+        "content_type_id": 2,
+        "codename": "delete_permission"
+      },
+      {
+        "id": 8,
+        "name": "Can view permission",
+        "content_type_id": 2,
+        "codename": "view_permission"
+      },
+      {
+        "id": 9,
+        "name": "Can add group",
+        "content_type_id": 3,
+        "codename": "add_group"
+      },
+      {
+        "id": 10,
+        "name": "Can change group",
+        "content_type_id": 3,
+        "codename": "change_group"
+      },
+      {
+        "id": 11,
+        "name": "Can delete group",
+        "content_type_id": 3,
+        "codename": "delete_group"
+      },
+      {
+        "id": 12,
+        "name": "Can view group",
+        "content_type_id": 3,
+        "codename": "view_group"
+      },
+      {
+        "id": 13,
+        "name": "Can add content type",
+        "content_type_id": 4,
+        "codename": "add_contenttype"
+      },
+      {
+        "id": 14,
+        "name": "Can change content type",
+        "content_type_id": 4,
+        "codename": "change_contenttype"
+      },
+      {
+        "id": 15,
+        "name": "Can delete content type",
+        "content_type_id": 4,
+        "codename": "delete_contenttype"
+      },
+      {
+        "id": 16,
+        "name": "Can view content type",
+        "content_type_id": 4,
+        "codename": "view_contenttype"
+      },
+      {
+        "id": 17,
+        "name": "Can add session",
+        "content_type_id": 5,
+        "codename": "add_session"
+      },
+      {
+        "id": 18,
+        "name": "Can change session",
+        "content_type_id": 5,
+        "codename": "change_session"
+      },
+      {
+        "id": 19,
+        "name": "Can delete session",
+        "content_type_id": 5,
+        "codename": "delete_session"
+      },
+      {
+        "id": 20,
+        "name": "Can view session",
+        "content_type_id": 5,
+        "codename": "view_session"
+      },
+      {
+        "id": 21,
+        "name": "Can add crontab",
+        "content_type_id": 6,
+        "codename": "add_crontabschedule"
+      },
+      {
+        "id": 22,
+        "name": "Can change crontab",
+        "content_type_id": 6,
+        "codename": "change_crontabschedule"
+      },
+      {
+        "id": 23,
+        "name": "Can delete crontab",
+        "content_type_id": 6,
+        "codename": "delete_crontabschedule"
+      },
+      {
+        "id": 24,
+        "name": "Can view crontab",
+        "content_type_id": 6,
+        "codename": "view_crontabschedule"
+      },
+      {
+        "id": 25,
+        "name": "Can add interval",
+        "content_type_id": 7,
+        "codename": "add_intervalschedule"
+      },
+      {
+        "id": 26,
+        "name": "Can change interval",
+        "content_type_id": 7,
+        "codename": "change_intervalschedule"
+      },
+      {
+        "id": 27,
+        "name": "Can delete interval",
+        "content_type_id": 7,
+        "codename": "delete_intervalschedule"
+      },
+      {
+        "id": 28,
+        "name": "Can view interval",
+        "content_type_id": 7,
+        "codename": "view_intervalschedule"
+      },
+      {
+        "id": 29,
+        "name": "Can add periodic task",
+        "content_type_id": 8,
+        "codename": "add_periodictask"
+      },
+      {
+        "id": 30,
+        "name": "Can change periodic task",
+        "content_type_id": 8,
+        "codename": "change_periodictask"
+      },
+      {
+        "id": 31,
+        "name": "Can delete periodic task",
+        "content_type_id": 8,
+        "codename": "delete_periodictask"
+      },
+      {
+        "id": 32,
+        "name": "Can view periodic task",
+        "content_type_id": 8,
+        "codename": "view_periodictask"
+      },
+      {
+        "id": 33,
+        "name": "Can add periodic task track",
+        "content_type_id": 9,
+        "codename": "add_periodictasks"
+      },
+      {
+        "id": 34,
+        "name": "Can change periodic task track",
+        "content_type_id": 9,
+        "codename": "change_periodictasks"
+      },
+      {
+        "id": 35,
+        "name": "Can delete periodic task track",
+        "content_type_id": 9,
+        "codename": "delete_periodictasks"
+      },
+      {
+        "id": 36,
+        "name": "Can view periodic task track",
+        "content_type_id": 9,
+        "codename": "view_periodictasks"
+      },
+      {
+        "id": 37,
+        "name": "Can add solar event",
+        "content_type_id": 10,
+        "codename": "add_solarschedule"
+      },
+      {
+        "id": 38,
+        "name": "Can change solar event",
+        "content_type_id": 10,
+        "codename": "change_solarschedule"
+      },
+      {
+        "id": 39,
+        "name": "Can delete solar event",
+        "content_type_id": 10,
+        "codename": "delete_solarschedule"
+      },
+      {
+        "id": 40,
+        "name": "Can view solar event",
+        "content_type_id": 10,
+        "codename": "view_solarschedule"
+      },
+      {
+        "id": 41,
+        "name": "Can add clocked",
+        "content_type_id": 11,
+        "codename": "add_clockedschedule"
+      },
+      {
+        "id": 42,
+        "name": "Can change clocked",
+        "content_type_id": 11,
+        "codename": "change_clockedschedule"
+      },
+      {
+        "id": 43,
+        "name": "Can delete clocked",
+        "content_type_id": 11,
+        "codename": "delete_clockedschedule"
+      },
+      {
+        "id": 44,
+        "name": "Can view clocked",
+        "content_type_id": 11,
+        "codename": "view_clockedschedule"
+      },
+      {
+        "id": 45,
+        "name": "Can add tenant",
+        "content_type_id": 12,
+        "codename": "add_tenant"
+      },
+      {
+        "id": 46,
+        "name": "Can change tenant",
+        "content_type_id": 12,
+        "codename": "change_tenant"
+      },
+      {
+        "id": 47,
+        "name": "Can delete tenant",
+        "content_type_id": 12,
+        "codename": "delete_tenant"
+      },
+      {
+        "id": 48,
+        "name": "Can view tenant",
+        "content_type_id": 12,
+        "codename": "view_tenant"
+      },
+      {
+        "id": 49,
+        "name": "Can add store settings",
+        "content_type_id": 13,
+        "codename": "add_storesettings"
+      },
+      {
+        "id": 50,
+        "name": "Can change store settings",
+        "content_type_id": 13,
+        "codename": "change_storesettings"
+      },
+      {
+        "id": 51,
+        "name": "Can delete store settings",
+        "content_type_id": 13,
+        "codename": "delete_storesettings"
+      },
+      {
+        "id": 52,
+        "name": "Can view store settings",
+        "content_type_id": 13,
+        "codename": "view_storesettings"
+      },
+      {
+        "id": 53,
+        "name": "Can add custom user",
+        "content_type_id": 14,
+        "codename": "add_customuser"
+      },
+      {
+        "id": 54,
+        "name": "Can change custom user",
+        "content_type_id": 14,
+        "codename": "change_customuser"
+      },
+      {
+        "id": 55,
+        "name": "Can delete custom user",
+        "content_type_id": 14,
+        "codename": "delete_customuser"
+      },
+      {
+        "id": 56,
+        "name": "Can view custom user",
+        "content_type_id": 14,
+        "codename": "view_customuser"
+      },
+      {
+        "id": 57,
+        "name": "Can add category",
+        "content_type_id": 15,
+        "codename": "add_category"
+      },
+      {
+        "id": 58,
+        "name": "Can change category",
+        "content_type_id": 15,
+        "codename": "change_category"
+      },
+      {
+        "id": 59,
+        "name": "Can delete category",
+        "content_type_id": 15,
+        "codename": "delete_category"
+      },
+      {
+        "id": 60,
+        "name": "Can view category",
+        "content_type_id": 15,
+        "codename": "view_category"
+      },
+      {
+        "id": 61,
+        "name": "Can add product",
+        "content_type_id": 16,
+        "codename": "add_product"
+      },
+      {
+        "id": 62,
+        "name": "Can change product",
+        "content_type_id": 16,
+        "codename": "change_product"
+      },
+      {
+        "id": 63,
+        "name": "Can delete product",
+        "content_type_id": 16,
+        "codename": "delete_product"
+      },
+      {
+        "id": 64,
+        "name": "Can view product",
+        "content_type_id": 16,
+        "codename": "view_product"
+      },
+      {
+        "id": 65,
+        "name": "Can add order",
+        "content_type_id": 17,
+        "codename": "add_order"
+      },
+      {
+        "id": 66,
+        "name": "Can change order",
+        "content_type_id": 17,
+        "codename": "change_order"
+      },
+      {
+        "id": 67,
+        "name": "Can delete order",
+        "content_type_id": 17,
+        "codename": "delete_order"
+      },
+      {
+        "id": 68,
+        "name": "Can view order",
+        "content_type_id": 17,
+        "codename": "view_order"
+      },
+      {
+        "id": 69,
+        "name": "Can add order item",
+        "content_type_id": 18,
+        "codename": "add_orderitem"
+      },
+      {
+        "id": 70,
+        "name": "Can change order item",
+        "content_type_id": 18,
+        "codename": "change_orderitem"
+      },
+      {
+        "id": 71,
+        "name": "Can delete order item",
+        "content_type_id": 18,
+        "codename": "delete_orderitem"
+      },
+      {
+        "id": 72,
+        "name": "Can view order item",
+        "content_type_id": 18,
+        "codename": "view_orderitem"
+      },
+      {
+        "id": 73,
+        "name": "Can add subscription payment",
+        "content_type_id": 19,
+        "codename": "add_subscriptionpayment"
+      },
+      {
+        "id": 74,
+        "name": "Can change subscription payment",
+        "content_type_id": 19,
+        "codename": "change_subscriptionpayment"
+      },
+      {
+        "id": 75,
+        "name": "Can delete subscription payment",
+        "content_type_id": 19,
+        "codename": "delete_subscriptionpayment"
+      },
+      {
+        "id": 76,
+        "name": "Can view subscription payment",
+        "content_type_id": 19,
+        "codename": "view_subscriptionpayment"
+      },
+      {
+        "id": 77,
+        "name": "Can add mpesa payment",
+        "content_type_id": 20,
+        "codename": "add_mpesapayment"
+      },
+      {
+        "id": 78,
+        "name": "Can change mpesa payment",
+        "content_type_id": 20,
+        "codename": "change_mpesapayment"
+      },
+      {
+        "id": 79,
+        "name": "Can delete mpesa payment",
+        "content_type_id": 20,
+        "codename": "delete_mpesapayment"
+      },
+      {
+        "id": 80,
+        "name": "Can view mpesa payment",
+        "content_type_id": 20,
+        "codename": "view_mpesapayment"
+      }
+    ]
+  },
+  "categories": {
+    "columns": [
+      "id",
+      "name",
+      "description",
+      "parent_id",
+      "tenant_id"
+    ],
+    "data": [
+      {
+        "id": "1f6a87b545ea46ec91bcac5c8347186a",
+        "name": "Electronics",
+        "description": "All electronics",
+        "parent_id": null,
+        "tenant_id": "7d6b2912dd5c44859ca03c2c3f64f6da"
+      },
+      {
+        "id": "4dc1cedf24bc49e7a6012c52687759c4",
+        "name": "Kitchen ware and household",
+        "description": "All hose hold items including gas",
+        "parent_id": null,
+        "tenant_id": "57a8fddaad5647ec8e5268ae84b24cee"
+      },
+      {
+        "id": "84da1bb9b1ec4b82b9a393d4b354063d",
+        "name": "clothes",
+        "description": "All clothes",
+        "parent_id": null,
+        "tenant_id": "b5fd43fe1a4c4ee2b22a53ed9eb75ab4"
+      },
+      {
+        "id": "f1a28fe797b3455b80afba32f11a00e3",
+        "name": "Beauty and cosmetics",
+        "description": "Beauty products",
+        "parent_id": null,
+        "tenant_id": "2976208fb0c8422f8bafbd9deb868fd4"
+      }
+    ]
+  },
+  "django_admin_log": {
+    "columns": [
+      "id",
+      "action_time",
+      "object_id",
+      "object_repr",
+      "action_flag",
+      "change_message",
+      "content_type_id",
+      "user_id"
+    ],
+    "data": [
+      {
+        "id": 1,
+        "action_time": "2025-11-28T11:26:30.643748",
+        "object_id": "ba1d17d9-4b4b-4633-8d1e-566b723aac94",
+        "object_repr": "Baddies",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]",
+        "content_type_id": 12,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      },
+      {
+        "id": 2,
+        "action_time": "2025-11-28T11:26:30.692839",
+        "object_id": "02042f69-d94a-4452-92f8-3fe3ff5835a1",
+        "object_repr": "Glamour",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]",
+        "content_type_id": 12,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      },
+      {
+        "id": 3,
+        "action_time": "2025-11-28T11:26:30.736243",
+        "object_id": "57a8fdda-ad56-47ec-8e52-68ae84b24cee",
+        "object_repr": "super-ego",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Is active\"]}}]",
+        "content_type_id": 12,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      },
+      {
+        "id": 4,
+        "action_time": "2025-12-13T21:48:26.644605",
+        "object_id": "84da1bb9-b1ec-4b82-b9a3-93d4b354063d",
+        "object_repr": "clothes",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]",
+        "content_type_id": 15,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      },
+      {
+        "id": 5,
+        "action_time": "2025-12-13T21:48:59.705140",
+        "object_id": "1f6a87b5-45ea-46ec-91bc-ac5c8347186a",
+        "object_repr": "Electronics",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]",
+        "content_type_id": 15,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      },
+      {
+        "id": 6,
+        "action_time": "2025-12-13T21:49:35.246167",
+        "object_id": "f1a28fe7-97b3-455b-80af-ba32f11a00e3",
+        "object_repr": "Beauty and cosmetics",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]",
+        "content_type_id": 15,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      },
+      {
+        "id": 7,
+        "action_time": "2025-12-13T21:50:36.582163",
+        "object_id": "4dc1cedf-24bc-49e7-a601-2c52687759c4",
+        "object_repr": "Kitchen ware and household",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]",
+        "content_type_id": 15,
+        "user_id": "0fe1483480f84ad29e2f744817ab9426"
+      }
+    ]
+  },
+  "django_celery_beat_clockedschedule": {
+    "columns": [
+      "id",
+      "clocked_time"
+    ],
+    "data": []
+  },
+  "django_celery_beat_crontabschedule": {
+    "columns": [
+      "id",
+      "minute",
+      "hour",
+      "day_of_week",
+      "day_of_month",
+      "month_of_year",
+      "timezone"
+    ],
+    "data": []
+  },
+  "django_celery_beat_intervalschedule": {
+    "columns": [
+      "id",
+      "every",
+      "period"
+    ],
+    "data": []
+  },
+  "django_celery_beat_periodictask": {
+    "columns": [
+      "id",
+      "name",
+      "task",
+      "args",
+      "kwargs",
+      "queue",
+      "exchange",
+      "routing_key",
+      "expires",
+      "enabled",
+      "last_run_at",
+      "total_run_count",
+      "date_changed",
+      "description",
+      "crontab_id",
+      "interval_id",
+      "solar_id",
+      "one_off",
+      "start_time",
+      "priority",
+      "headers",
+      "clocked_id",
+      "expire_seconds"
+    ],
+    "data": []
+  },
+  "django_celery_beat_periodictasks": {
+    "columns": [
+      "ident",
+      "last_update"
+    ],
+    "data": []
+  },
+  "django_celery_beat_solarschedule": {
+    "columns": [
+      "id",
+      "event",
+      "latitude",
+      "longitude"
+    ],
+    "data": []
+  },
+  "django_content_type": {
+    "columns": [
+      "id",
+      "app_label",
+      "model"
+    ],
+    "data": [
+      {
+        "id": 1,
+        "app_label": "admin",
+        "model": "logentry"
+      },
+      {
+        "id": 3,
+        "app_label": "auth",
+        "model": "group"
+      },
+      {
+        "id": 2,
+        "app_label": "auth",
+        "model": "permission"
+      },
+      {
+        "id": 4,
+        "app_label": "contenttypes",
+        "model": "contenttype"
+      },
+      {
+        "id": 11,
+        "app_label": "django_celery_beat",
+        "model": "clockedschedule"
+      },
+      {
+        "id": 6,
+        "app_label": "django_celery_beat",
+        "model": "crontabschedule"
+      },
+      {
+        "id": 7,
+        "app_label": "django_celery_beat",
+        "model": "intervalschedule"
+      },
+      {
+        "id": 8,
+        "app_label": "django_celery_beat",
+        "model": "periodictask"
+      },
+      {
+        "id": 9,
+        "app_label": "django_celery_beat",
+        "model": "periodictasks"
+      },
+      {
+        "id": 10,
+        "app_label": "django_celery_beat",
+        "model": "solarschedule"
+      },
+      {
+        "id": 17,
+        "app_label": "orders",
+        "model": "order"
+      },
+      {
+        "id": 18,
+        "app_label": "orders",
+        "model": "orderitem"
+      },
+      {
+        "id": 20,
+        "app_label": "payments",
+        "model": "mpesapayment"
+      },
+      {
+        "id": 19,
+        "app_label": "payments",
+        "model": "subscriptionpayment"
+      },
+      {
+        "id": 15,
+        "app_label": "products",
+        "model": "category"
+      },
+      {
+        "id": 16,
+        "app_label": "products",
+        "model": "product"
+      },
+      {
+        "id": 5,
+        "app_label": "sessions",
+        "model": "session"
+      },
+      {
+        "id": 13,
+        "app_label": "tenants",
+        "model": "storesettings"
+      },
+      {
+        "id": 12,
+        "app_label": "tenants",
+        "model": "tenant"
+      },
+      {
+        "id": 14,
+        "app_label": "users",
+        "model": "customuser"
+      }
+    ]
+  },
+  "django_migrations": {
+    "columns": [
+      "id",
+      "app",
+      "name",
+      "applied"
+    ],
+    "data": [
+      {
+        "id": 1,
+        "app": "tenants",
+        "name": "0001_initial",
+        "applied": "2025-11-18T10:59:34.605860"
+      },
+      {
+        "id": 2,
+        "app": "contenttypes",
+        "name": "0001_initial",
+        "applied": "2025-11-18T10:59:36.228054"
+      },
+      {
+        "id": 3,
+        "app": "contenttypes",
+        "name": "0002_remove_content_type_name",
+        "applied": "2025-11-18T10:59:39.167852"
+      },
+      {
+        "id": 4,
+        "app": "auth",
+        "name": "0001_initial",
+        "applied": "2025-11-18T10:59:44.700665"
+      },
+      {
+        "id": 5,
+        "app": "auth",
+        "name": "0002_alter_permission_name_max_length",
+        "applied": "2025-11-18T10:59:45.483766"
+      },
+      {
+        "id": 6,
+        "app": "auth",
+        "name": "0003_alter_user_email_max_length",
+        "applied": "2025-11-18T10:59:45.831907"
+      },
+      {
+        "id": 7,
+        "app": "auth",
+        "name": "0004_alter_user_username_opts",
+        "applied": "2025-11-18T10:59:46.174703"
+      },
+      {
+        "id": 8,
+        "app": "auth",
+        "name": "0005_alter_user_last_login_null",
+        "applied": "2025-11-18T10:59:46.544882"
+      },
+      {
+        "id": 9,
+        "app": "auth",
+        "name": "0006_require_contenttypes_0002",
+        "applied": "2025-11-18T10:59:46.871919"
+      },
+      {
+        "id": 10,
+        "app": "auth",
+        "name": "0007_alter_validators_add_error_messages",
+        "applied": "2025-11-18T10:59:47.303170"
+      },
+      {
+        "id": 11,
+        "app": "auth",
+        "name": "0008_alter_user_username_max_length",
+        "applied": "2025-11-18T10:59:47.630160"
+      },
+      {
+        "id": 12,
+        "app": "auth",
+        "name": "0009_alter_user_last_name_max_length",
+        "applied": "2025-11-18T10:59:47.972089"
+      },
+      {
+        "id": 13,
+        "app": "auth",
+        "name": "0010_alter_group_name_max_length",
+        "applied": "2025-11-18T10:59:48.624287"
+      },
+      {
+        "id": 14,
+        "app": "auth",
+        "name": "0011_update_proxy_permissions",
+        "applied": "2025-11-18T10:59:50.245537"
+      },
+      {
+        "id": 15,
+        "app": "auth",
+        "name": "0012_alter_user_first_name_max_length",
+        "applied": "2025-11-18T10:59:50.629105"
+      },
+      {
+        "id": 16,
+        "app": "users",
+        "name": "0001_initial",
+        "applied": "2025-11-18T10:59:58.864320"
+      },
+      {
+        "id": 17,
+        "app": "admin",
+        "name": "0001_initial",
+        "applied": "2025-11-18T11:00:01.153072"
+      },
+      {
+        "id": 18,
+        "app": "admin",
+        "name": "0002_logentry_remove_auto_add",
+        "applied": "2025-11-18T11:00:01.479837"
+      },
+      {
+        "id": 19,
+        "app": "admin",
+        "name": "0003_logentry_add_action_flag_choices",
+        "applied": "2025-11-18T11:00:01.836781"
+      },
+      {
+        "id": 20,
+        "app": "django_celery_beat",
+        "name": "0001_initial",
+        "applied": "2025-11-18T11:00:05.581347"
+      },
+      {
+        "id": 21,
+        "app": "django_celery_beat",
+        "name": "0002_auto_20161118_0346",
+        "applied": "2025-11-18T11:00:07.045616"
+      },
+      {
+        "id": 22,
+        "app": "django_celery_beat",
+        "name": "0003_auto_20161209_0049",
+        "applied": "2025-11-18T11:00:07.873765"
+      },
+      {
+        "id": 23,
+        "app": "django_celery_beat",
+        "name": "0004_auto_20170221_0000",
+        "applied": "2025-11-18T11:00:08.217477"
+      },
+      {
+        "id": 24,
+        "app": "django_celery_beat",
+        "name": "0005_add_solarschedule_events_choices",
+        "applied": "2025-11-18T11:00:08.554475"
+      },
+      {
+        "id": 25,
+        "app": "django_celery_beat",
+        "name": "0006_auto_20180322_0932",
+        "applied": "2025-11-18T11:00:10.960327"
+      },
+      {
+        "id": 26,
+        "app": "django_celery_beat",
+        "name": "0007_auto_20180521_0826",
+        "applied": "2025-11-18T11:00:12.973506"
+      },
+      {
+        "id": 27,
+        "app": "django_celery_beat",
+        "name": "0008_auto_20180914_1922",
+        "applied": "2025-11-18T11:00:13.389460"
+      },
+      {
+        "id": 28,
+        "app": "django_celery_beat",
+        "name": "0006_auto_20180210_1226",
+        "applied": "2025-11-18T11:00:14.173481"
+      },
+      {
+        "id": 29,
+        "app": "django_celery_beat",
+        "name": "0006_periodictask_priority",
+        "applied": "2025-11-18T11:00:15.198043"
+      },
+      {
+        "id": 30,
+        "app": "django_celery_beat",
+        "name": "0009_periodictask_headers",
+        "applied": "2025-11-18T11:00:16.107028"
+      },
+      {
+        "id": 31,
+        "app": "django_celery_beat",
+        "name": "0010_auto_20190429_0326",
+        "applied": "2025-11-18T11:00:16.676847"
+      },
+      {
+        "id": 32,
+        "app": "django_celery_beat",
+        "name": "0011_auto_20190508_0153",
+        "applied": "2025-11-18T11:00:18.909798"
+      },
+      {
+        "id": 33,
+        "app": "django_celery_beat",
+        "name": "0012_periodictask_expire_seconds",
+        "applied": "2025-11-18T11:00:19.734114"
+      },
+      {
+        "id": 34,
+        "app": "django_celery_beat",
+        "name": "0013_auto_20200609_0727",
+        "applied": "2025-11-18T11:00:20.095479"
+      },
+      {
+        "id": 35,
+        "app": "django_celery_beat",
+        "name": "0014_remove_clockedschedule_enabled",
+        "applied": "2025-11-18T11:00:20.863664"
+      },
+      {
+        "id": 36,
+        "app": "django_celery_beat",
+        "name": "0015_edit_solarschedule_events_choices",
+        "applied": "2025-11-18T11:00:21.179921"
+      },
+      {
+        "id": 37,
+        "app": "django_celery_beat",
+        "name": "0016_alter_crontabschedule_timezone",
+        "applied": "2025-11-18T11:00:21.507516"
+      },
+      {
+        "id": 38,
+        "app": "django_celery_beat",
+        "name": "0017_alter_crontabschedule_month_of_year",
+        "applied": "2025-11-18T11:00:21.851506"
+      },
+      {
+        "id": 39,
+        "app": "django_celery_beat",
+        "name": "0018_improve_crontab_helptext",
+        "applied": "2025-11-18T11:00:22.171411"
+      },
+      {
+        "id": 40,
+        "app": "django_celery_beat",
+        "name": "0019_alter_periodictasks_options",
+        "applied": "2025-11-18T11:00:22.795092"
+      },
+      {
+        "id": 41,
+        "app": "products",
+        "name": "0001_initial",
+        "applied": "2025-11-18T11:00:27.412388"
+      },
+      {
+        "id": 42,
+        "app": "orders",
+        "name": "0001_initial",
+        "applied": "2025-11-18T11:00:28.433411"
+      },
+      {
+        "id": 43,
+        "app": "orders",
+        "name": "0002_initial",
+        "applied": "2025-11-18T11:00:32.064827"
+      },
+      {
+        "id": 44,
+        "app": "orders",
+        "name": "0003_alter_order_options_alter_orderitem_options",
+        "applied": "2025-11-18T11:00:32.402521"
+      },
+      {
+        "id": 45,
+        "app": "orders",
+        "name": "0004_order_notes_order_payment_method_order_shipping_cost_and_more",
+        "applied": "2025-11-18T11:00:36.004470"
+      },
+      {
+        "id": 46,
+        "app": "payments",
+        "name": "0001_initial",
+        "applied": "2025-11-18T11:00:37.644956"
+      },
+      {
+        "id": 47,
+        "app": "payments",
+        "name": "0002_alter_subscriptionpayment_options",
+        "applied": "2025-11-18T11:00:37.981563"
+      },
+      {
+        "id": 48,
+        "app": "payments",
+        "name": "0003_mpesapayment",
+        "applied": "2025-11-18T11:00:40.280036"
+      },
+      {
+        "id": 49,
+        "app": "tenants",
+        "name": "0002_alter_tenant_options",
+        "applied": "2025-11-18T11:00:40.629000"
+      },
+      {
+        "id": 50,
+        "app": "tenants",
+        "name": "0003_tenant_address_tenant_business_registration_and_more",
+        "applied": "2025-11-18T11:00:44.438864"
+      },
+      {
+        "id": 51,
+        "app": "products",
+        "name": "0002_alter_category_options_alter_product_options",
+        "applied": "2025-11-18T11:00:44.775890"
+      },
+      {
+        "id": 52,
+        "app": "products",
+        "name": "0003_product_cost_price",
+        "applied": "2025-11-18T11:00:45.493285"
+      },
+      {
+        "id": 53,
+        "app": "products",
+        "name": "0004_alter_product_sku",
+        "applied": "2025-11-18T11:00:45.955019"
+      },
+      {
+        "id": 54,
+        "app": "products",
+        "name": "0005_product_barcode",
+        "applied": "2025-11-18T11:00:47.032994"
+      },
+      {
+        "id": 55,
+        "app": "products",
+        "name": "0006_product_allow_backorder_product_image_and_more",
+        "applied": "2025-11-18T11:00:51.748787"
+      },
+      {
+        "id": 56,
+        "app": "products",
+        "name": "0007_product_vendor_alter_product_description",
+        "applied": "2025-11-18T11:00:53.453645"
+      },
+      {
+        "id": 57,
+        "app": "sessions",
+        "name": "0001_initial",
+        "applied": "2025-11-18T11:00:54.812369"
+      },
+      {
+        "id": 58,
+        "app": "tenants",
+        "name": "0004_storesettings",
+        "applied": "2025-11-18T11:00:55.937557"
+      },
+      {
+        "id": 59,
+        "app": "tenants",
+        "name": "0005_alter_storesettings_options_and_more",
+        "applied": "2025-11-18T11:00:56.805721"
+      },
+      {
+        "id": 60,
+        "app": "tenants",
+        "name": "0006_alter_storesettings_free_shipping_threshold_and_more",
+        "applied": "2025-11-18T11:00:57.161365"
+      },
+      {
+        "id": 61,
+        "app": "users",
+        "name": "0002_alter_customuser_options_customuser_is_vendor_admin_and_more",
+        "applied": "2025-11-18T11:01:00.475712"
+      },
+      {
+        "id": 62,
+        "app": "products",
+        "name": "0008_alter_product_image",
+        "applied": "2025-12-02T08:04:21.239923"
+      }
+    ]
+  },
+  "django_session": {
+    "columns": [
+      "session_key",
+      "session_data",
+      "expire_date"
+    ],
+    "data": [
+      {
+        "session_key": "2ao01fo2o9uzqbu04spbd0ast8wzpm9x",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdUE:CPh3VyRDmTAobvh7aeVxfKoPEuQ2q612GYvC_Zg-Vco",
+        "expire_date": "2025-12-08T20:48:38.990330"
+      },
+      {
+        "session_key": "3b7g48f1iwv1bpw9lvokka8x101aan25",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdbM:XNKGtke7Blj6Z7tHFU8R-wQ525x13CzBUWxqTaCTUuw",
+        "expire_date": "2025-12-08T20:56:00.795800"
+      },
+      {
+        "session_key": "3oi2v4y2xj8wvm8i3sk0avb3vxv4icyz",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdgu:Hc3f3ch2r8e1nH0evBXv0dXc2jcUNyWWW7ja44GY5lk",
+        "expire_date": "2025-12-08T21:01:44.403018"
+      },
+      {
+        "session_key": "4owb0mywbeg007ic850hw5wfrot1dypz",
+        "session_data": ".eJxVzLsOwjAMheF3yUyiuElal5GdZ6hsx6EF1Eq9TIh3h0odYD7_d16mo23tu23RuRuyOZuqSZoEow3cgo2hVosAbDVErylQoYTm9MuY5KHjbvOdxtvkZBrXeWC3J-5YF3edsj4vR_t30NPSfzXkGgSZERCxNBzRFyyswprVl5qTqo-ZQD2EViUwgQ-VT01CyiDm_QHUeUGW:1vNHbf:As5LD2T44uUMHK-CFjZZwtJ7t346bkP0A_Q9mDFF0no",
+        "expire_date": "2025-12-07T21:26:51.483653"
+      },
+      {
+        "session_key": "4xtiwkaiz546q5ihcrf17h5cknheq5vv",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdfR:7RvOfQ7b9exLVyJmfsvUiZaOKKBgKac8zIQ6De4RSYc",
+        "expire_date": "2025-12-08T21:00:13.585248"
+      },
+      {
+        "session_key": "76bh7jp1njw27fjyf69phqf8ptijbkcp",
+        "session_data": ".eJxVzLsOwjAMheF3yUyiNHUcl5GdZ6jc2KEF1Eq9TIh3h0odYD7_d16m5W3t223RuR3EnI0vWgHVYMkXssASbKOh2ARAVeKugYDm9Ms6zg8ddyt3Hm-Ty9O4zkPn9sQd6-Kuk-jzcrR_Bz0v_VcXRYKUFSMAinjBrCQ5-CaWqCA-oBRmLFFikuiFkSmFUHyNRIzm_QG3yEEG:1vSzdu:VJKDd4GCWKuK-SpLZDuQ87aELLXrH4ya2lcSEIQ38Dk",
+        "expire_date": "2025-12-23T15:28:46.256259"
+      },
+      {
+        "session_key": "7hpj6nsqmuhk0cgu4xcj84wywonty5ws",
+        "session_data": ".eJxVjTsOwjAQBe_iGlv2xthrSnrOEO3HIQGUSPlUiLujSCmgfjPz3qalbe3bbalzO6i5GGQIkL1aaRLaGKjYQqnawphVVTBTZ06_GpM867i7-qDxPjmZxnUe2O2IO9bF3Satr-vB_gV6Wvr92ceMnCD4XApG9CEphJQ1xDNGkCIKwl4EmsTaCOSATElqZs8dgvl8AdNhQJA:1vTbvx:vxQEdss2m1zs2rapeTTYwrGrnBg3q4W2CWeMzN_DScY",
+        "expire_date": "2025-12-25T08:21:57.086474"
+      },
+      {
+        "session_key": "b2yb4p4wy6dkj5jlqrh5jicdrpsq4rgq",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdZw:2IUcP8HE-SfguJcqLkokXJalE2QX9Pv5NG3PvSg8TgQ",
+        "expire_date": "2025-12-08T20:54:32.886991"
+      },
+      {
+        "session_key": "bt01n7fsoj3btv17x6c2sf6q7bxro2z7",
+        "session_data": ".eJxVzLsOwjAMheF3yUyiNHUcl5GdZ6jc2KEF1Eq9TIh3h0odYD7_d16m5W3t223RuR3EnI0vWgHVYMkXssASbKOh2ARAVeKugYDm9Ms6zg8ddyt3Hm-Ty9O4zkPn9sQd6-Kuk-jzcrR_Bz0v_VcXRYKUFSMAinjBrCQ5-CaWqCA-oBRmLFFikuiFkSmFUHyNRIzm_QG3yEEG:1vM0ZT:WxWYFArEXAj75v1WxojnynJEWFWjvURpUuZnxufU7t0",
+        "expire_date": "2025-12-04T09:03:19.338072"
+      },
+      {
+        "session_key": "jqt6hmv3f7pftp7p00ks0zec1fphjh11",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdh2:lOcUU5hMCUT8Ro4Cuto_hpmAibs0nsO4JEKR1RQK2_k",
+        "expire_date": "2025-12-08T21:01:52.840221"
+      },
+      {
+        "session_key": "p457b5e7q99785eg9pkzd3j4956l6dmy",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdfY:TFs2BDbqPmHaxBDV03u5shfZTbme1VNXu7JVovN-LeE",
+        "expire_date": "2025-12-08T21:00:20.789876"
+      },
+      {
+        "session_key": "rcnhetl9connsuoll8b1vxavdt11afr3",
+        "session_data": ".eJxVzDsOwjAQRdG9uCaWP-PYQ0nPGqIZe0wCKJHyqRB7h0gpoH73vJfqaFv7bltk7oaizspaE5hEGmkrNVApNYQhNYBoIrniwUd1-mVM-SHjbsudxtuk8zSu88B6T_SxLvo6FXlejvbvoKel_2rJjgEDJ7EJUhFXHHvJhgEgcAgSMWewqbbOA7LESm3hjFXQcOSq3h8UDEIc:1vQ9w8:4U-7wy1V-xUEOQFdOvTF0fQ_DOamy7CCUaUwUbCdpgc",
+        "expire_date": "2025-12-15T19:51:52.192558"
+      },
+      {
+        "session_key": "rgxeixn33rrdodim0467r4fdoaoi2rgt",
+        "session_data": ".eJxVzDkOwjAQheG7uMbW2J7xQknPGaLxRgIokbJUiLtDpBRQv_97L9HxtvbdttS5G4o4CyiE1Voj0TJIRPQysmvShEhRG45AVpx-WeL8qONuy53H26TyNK7zkNSeqGNd1HUq9Xk52r-Dnpf-q7PX6IHBAnnDzpJutYbYfMJGxZjAzAVccNlSohTYhBStbg1QQ0Yt3h8hWD-C:1vVn7z:XM0mzhaUtiwaXD_iuuY_FAtCMlhH8Mgyoh8oO3A9RAM",
+        "expire_date": "2025-12-31T08:43:23.768744"
+      },
+      {
+        "session_key": "ukushnj9q8a8rb99muhgpek06wv304aq",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdUM:5tHtX0DsJm6SoEj0zltZsfwh-RdbncXLx6laTRf6HUM",
+        "expire_date": "2025-12-08T20:48:46.546081"
+      },
+      {
+        "session_key": "uuqt9t0px3h0luz01jb6a0sahrbljwo6",
+        "session_data": ".eJxVzLsOwjAMheF3yUyiNHUcl5GdZ6jc2KEF1Eq9TIh3h0odYD7_d16m5W3t223RuR3EnI0vWgHVYMkXssASbKOh2ARAVeKugYDm9Ms6zg8ddyt3Hm-Ty9O4zkPn9sQd6-Kuk-jzcrR_Bz0v_VcXRYKUFSMAinjBrCQ5-CaWqCA-oBRmLFFikuiFkSmFUHyNRIzm_QG3yEEG:1vUXSf:UYpU06ZR5AXDqjagtr6kLBNnENzHiY2kpBw6XM8f2jo",
+        "expire_date": "2025-12-27T21:47:33.304445"
+      },
+      {
+        "session_key": "v3mwjdhk9hl905cjd4lho890hg7eaehy",
+        "session_data": ".eJxVjTsOwjAQBe_iGlv2xthrSnrOEO3HIQGUSPlUiLujSCmgfjPz3qalbe3bbalzO6i5GGQIkL1aaRLaGKjYQqnawphVVTBTZ06_GpM867i7-qDxPjmZxnUe2O2IO9bF3Satr-vB_gV6Wvr92ceMnCD4XApG9CEphJQ1xDNGkCIKwl4EmsTaCOSATElqZs8dgvl8AdNhQJA:1vTcZV:Ht9bNE3hmOusCsAhARG9KiDJtiIOhxCwpcvjTcUN0iw",
+        "expire_date": "2025-12-25T09:02:49.451435"
+      },
+      {
+        "session_key": "zt8ofyzlmq6ildpgln094e3tn8p0taro",
+        "session_data": ".eJxVjDkOwjAUBe_iGluOtx9T0nOGyH8xYVEiZakQdyeRUkDzmpl5b9WVdem7dZapu7M6K7CtbZmqFueqDsmRLiBVs4Pi2CNhJnX6zbDQU4a95UcZbqOhcVimO5pdMQedzXVkeV0O9--gL3O_1dQUDyLAzBG8EHkBCN7VFLfJDglsxo2EELOlJELYYgy5SaXJFdTnC36oQho:1vNdPo:k6N_454MGHJoklhRzYv84RFzDzJZpk_rb8aXu-bFwLc",
+        "expire_date": "2025-12-08T20:44:04.598474"
+      }
+    ]
+  },
+  "mpesa_payments": {
+    "columns": [
+      "id",
+      "phone_number",
+      "amount",
+      "merchant_request_id",
+      "checkout_request_id",
+      "mpesa_receipt_number",
+      "transaction_date",
+      "status",
+      "result_code",
+      "result_description",
+      "created_at",
+      "updated_at",
+      "order_id",
+      "user_id"
+    ],
+    "data": []
+  },
+  "order_items": {
+    "columns": [
+      "id",
+      "quantity",
+      "price",
+      "order_id",
+      "product_id"
+    ],
+    "data": []
+  },
+  "orders": {
+    "columns": [
+      "id",
+      "total_amount",
+      "status",
+      "customer_name",
+      "customer_email",
+      "customer_phone",
+      "shipping_address",
+      "mpesa_checkout_request_id",
+      "mpesa_transaction_id",
+      "created_at",
+      "updated_at",
+      "customer_id",
+      "tenant_id",
+      "notes",
+      "payment_method",
+      "shipping_cost",
+      "subtotal"
+    ],
+    "data": []
+  },
+  "products": {
+    "columns": [
+      "id",
+      "name",
+      "description",
+      "price",
+      "compare_at_price",
+      "sku",
+      "track_quantity",
+      "stock_quantity",
+      "is_active",
+      "created_at",
+      "updated_at",
+      "Category_id",
+      "tenant_id",
+      "cost_price",
+      "barcode",
+      "allow_backorder",
+      "image",
+      "is_featured",
+      "published_at",
+      "seo_description",
+      "seo_title",
+      "status",
+      "vendor_id"
+    ],
+    "data": [
+      {
+        "id": "1e9e54cca85248caaf102e0e96273d16",
+        "name": "Smart Watch",
+        "description": "Feature-rich smartwatch with health monitoring",
+        "price": "199.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-ZUHR0D",
+        "track_quantity": 1,
+        "stock_quantity": 8,
+        "is_active": 1,
+        "created_at": "2025-11-24T21:00:24.338005",
+        "updated_at": "2025-11-24T21:00:24.338043",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGENZUHR0D",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      },
+      {
+        "id": "2c41fcd251a94fab9405c98290dcb293",
+        "name": "Trendy outfits",
+        "description": "All trendy clothes",
+        "price": "1200.00",
+        "compare_at_price": null,
+        "sku": "FAS-GEN-IXXKUB",
+        "track_quantity": 0,
+        "stock_quantity": 17,
+        "is_active": 0,
+        "created_at": "2025-12-13T21:28:29.701513",
+        "updated_at": "2025-12-16T11:49:00.436689",
+        "Category_id": "84da1bb9b1ec4b82b9a393d4b354063d",
+        "tenant_id": "b5fd43fe1a4c4ee2b22a53ed9eb75ab4",
+        "cost_price": null,
+        "barcode": "MTEFASGENIXXKUB",
+        "allow_backorder": 0,
+        "image": "image/upload/https://res.cloudinary.com/dg7gwfpck/image/upload/v1765885728/kzxvipis4t5kbjktzesd.jpg",
+        "is_featured": 1,
+        "published_at": "2025-12-15T18:16:59.008006",
+        "seo_description": "",
+        "seo_title": "",
+        "status": "published",
+        "vendor_id": "b3417fe281f74eef9461fbbe2d1e8e7d"
+      },
+      {
+        "id": "8fc852aa383b472ca23cbb34c56dcf3e",
+        "name": "Ice cream",
+        "description": "Chocolate icecream",
+        "price": "300.00",
+        "compare_at_price": null,
+        "sku": "SHA-GEN-K6UJQ1",
+        "track_quantity": 0,
+        "stock_quantity": 8,
+        "is_active": 0,
+        "created_at": "2025-12-17T08:48:27.059915",
+        "updated_at": "2025-12-17T14:22:54.668901",
+        "Category_id": null,
+        "tenant_id": "1fa03175f42b438fa56943621d1c8ef4",
+        "cost_price": null,
+        "barcode": "MTESHAGENK6UJQ1",
+        "allow_backorder": 0,
+        "image": "image/upload/https://res.cloudinary.com/dg7gwfpck/image/upload/v1765981358/uk7jdpokdhjketaqxcyb.jpg",
+        "is_featured": 1,
+        "published_at": "2025-12-17T08:48:27.059337",
+        "seo_description": "",
+        "seo_title": "",
+        "status": "published",
+        "vendor_id": "0d54e33243a044479a6f2895912a9053"
+      },
+      {
+        "id": "906c737f31b24a1cb78ee5af81cacb03",
+        "name": "Wireless Headphones",
+        "description": "High-quality wireless headphones with noise cancellation",
+        "price": "89.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-PJZ23H",
+        "track_quantity": 1,
+        "stock_quantity": 15,
+        "is_active": 1,
+        "created_at": "2025-11-24T21:01:54.498183",
+        "updated_at": "2025-11-24T21:01:54.498220",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGENPJZ23H",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      },
+      {
+        "id": "92f34b80b82f4cbcb9b0ff2fe0e8394f",
+        "name": "Wireless Headphones",
+        "description": "High-quality wireless headphones with noise cancellation",
+        "price": "89.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-9PBGIM",
+        "track_quantity": 1,
+        "stock_quantity": 15,
+        "is_active": 1,
+        "created_at": "2025-11-24T21:00:22.451201",
+        "updated_at": "2025-11-24T21:00:22.451231",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGEN9PBGIM",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      },
+      {
+        "id": "9a764b2e990944caa7fca32e434ad128",
+        "name": "Laptop Backpack",
+        "description": "Durable laptop backpack with multiple compartments",
+        "price": "39.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-RKZA2X",
+        "track_quantity": 1,
+        "stock_quantity": 25,
+        "is_active": 1,
+        "created_at": "2025-11-24T21:01:58.610227",
+        "updated_at": "2025-11-24T21:01:58.610273",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGENRKZA2X",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      },
+      {
+        "id": "be10a39449e249cd9781b4ec048a5e94",
+        "name": "Smart Watch",
+        "description": "Feature-rich smartwatch with health monitoring",
+        "price": "199.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-WGUXCD",
+        "track_quantity": 1,
+        "stock_quantity": 8,
+        "is_active": 1,
+        "created_at": "2025-11-24T21:01:57.732163",
+        "updated_at": "2025-11-24T21:01:57.732204",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGENWGUXCD",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      },
+      {
+        "id": "c97fe03e70534897a3d7ca401803257e",
+        "name": "Test Product with Tenant",
+        "description": "A test product created with tenant context",
+        "price": "49.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-YCDD2F",
+        "track_quantity": 1,
+        "stock_quantity": 20,
+        "is_active": 1,
+        "created_at": "2025-11-24T20:56:02.358044",
+        "updated_at": "2025-11-24T20:56:02.358084",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGENYCDD2F",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      },
+      {
+        "id": "e3e2dae0cadc4362be4ca99dfd78bb0d",
+        "name": "Laptop Backpack",
+        "description": "Durable laptop backpack with multiple compartments",
+        "price": "39.99",
+        "compare_at_price": null,
+        "sku": "FIN-GEN-N4LF7L",
+        "track_quantity": 1,
+        "stock_quantity": 25,
+        "is_active": 1,
+        "created_at": "2025-11-24T21:00:25.243187",
+        "updated_at": "2025-11-24T21:00:25.243225",
+        "Category_id": null,
+        "tenant_id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "cost_price": null,
+        "barcode": "MTEFINGENN4LF7L",
+        "allow_backorder": 0,
+        "image": "",
+        "is_featured": 0,
+        "published_at": null,
+        "seo_description": "",
+        "seo_title": "",
+        "status": "draft",
+        "vendor_id": "70808dcfe22f462ca7efd27a2d3bcb9c"
+      }
+    ]
+  },
+  "subscription_payments": {
+    "columns": [
+      "id",
+      "amount",
+      "mpesa_transaction_id",
+      "status",
+      "created_at",
+      "tenant_id"
+    ],
+    "data": []
+  },
+  "tenants": {
+    "columns": [
+      "id",
+      "name",
+      "subdomain",
+      "is_active",
+      "created_at",
+      "subscription_tier",
+      "subscription_status",
+      "email",
+      "phone_number",
+      "mpesa_business_shortcode",
+      "mpesa_account_number",
+      "address",
+      "business_registration",
+      "description",
+      "owner_email",
+      "owner_name",
+      "store_logo"
+    ],
+    "data": [
+      {
+        "id": "02042f69d94a445292f83fe3ff5835a1",
+        "name": "Glamour",
+        "subdomain": "Glamour",
+        "is_active": 1,
+        "created_at": "2025-11-28T09:56:57.560593",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "natashahope123@gmail.com",
+        "phone_number": "0793365825",
+        "mpesa_business_shortcode": "",
+        "mpesa_account_number": "",
+        "address": "",
+        "business_registration": "",
+        "description": "",
+        "owner_email": "",
+        "owner_name": "Natasha hope",
+        "store_logo": ""
+      },
+      {
+        "id": "03d780e9a34b41a99a028c3ecb3dce13",
+        "name": "Final Test Store",
+        "subdomain": "finalteststore",
+        "is_active": 1,
+        "created_at": "2025-11-24T20:08:49.298235",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "finaltest@example.com",
+        "phone_number": "0712345678",
+        "mpesa_business_shortcode": "123456",
+        "mpesa_account_number": "testaccount",
+        "address": "123 Final Test Street",
+        "business_registration": "REG123",
+        "description": "Final test store registration after fixes",
+        "owner_email": "",
+        "owner_name": "Final Test Owner",
+        "store_logo": ""
+      },
+      {
+        "id": "1fa03175f42b438fa56943621d1c8ef4",
+        "name": "Shavia's Store",
+        "subdomain": "shavia",
+        "is_active": 0,
+        "created_at": "2025-12-17T08:42:35.879424",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "Laurashavia@gmail.com",
+        "phone_number": "0106639838",
+        "mpesa_business_shortcode": "0106639838",
+        "mpesa_account_number": "0106639838",
+        "address": "Kitale",
+        "business_registration": "",
+        "description": "Snacks and soft drinks",
+        "owner_email": "Laurashavia@gmail.com",
+        "owner_name": "Laura Shavia",
+        "store_logo": ""
+      },
+      {
+        "id": "280218d7dc16421cb3948b71adac7d4f",
+        "name": "Baby",
+        "subdomain": "baby",
+        "is_active": 0,
+        "created_at": "2025-12-01T19:51:18.401709",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "zainabsaners@gmail.com",
+        "phone_number": "0724783374",
+        "mpesa_business_shortcode": "522533",
+        "mpesa_account_number": "0724783374",
+        "address": "Kakamega",
+        "business_registration": "",
+        "description": "Baby clothes",
+        "owner_email": "zainabsaners@gmail.com",
+        "owner_name": "Zainab Saners",
+        "store_logo": ""
+      },
+      {
+        "id": "2976208fb0c8422f8bafbd9deb868fd4",
+        "name": "pinky",
+        "subdomain": "pinky",
+        "is_active": 0,
+        "created_at": "2025-12-11T09:14:21.145443",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "bettyaod@gmail.com",
+        "phone_number": "0793619542",
+        "mpesa_business_shortcode": "0793619542",
+        "mpesa_account_number": "0793619542",
+        "address": "Kisumu",
+        "business_registration": "",
+        "description": "cosmetics",
+        "owner_email": "bettyaod@gmail.com",
+        "owner_name": "Betty pink",
+        "store_logo": ""
+      },
+      {
+        "id": "2beed9b6b66c423b9e4f4f1691cf5275",
+        "name": "Test Store",
+        "subdomain": "teststore123",
+        "is_active": 0,
+        "created_at": "2025-11-24T19:19:09.178714",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "teststore@example.com",
+        "phone_number": "0712345678",
+        "mpesa_business_shortcode": "123456",
+        "mpesa_account_number": "testaccount",
+        "address": "123 Test Street, Nairobi",
+        "business_registration": "REG123",
+        "description": "A test store for registration",
+        "owner_email": "",
+        "owner_name": "John Doe",
+        "store_logo": ""
+      },
+      {
+        "id": "2cc01223d9cd4418ab6730cb81952826",
+        "name": "multi",
+        "subdomain": "multi",
+        "is_active": 0,
+        "created_at": "2025-12-05T20:20:51.064372",
+        "subscription_tier": "premium",
+        "subscription_status": "pending",
+        "email": "triniquezainab@gmail.com",
+        "phone_number": "0724783374",
+        "mpesa_business_shortcode": "0724783374",
+        "mpesa_account_number": "0724783374",
+        "address": "kakamega",
+        "business_registration": "",
+        "description": "multiple and diverse products",
+        "owner_email": "triniquezainab@gmail.com",
+        "owner_name": "Zainab saners",
+        "store_logo": ""
+      },
+      {
+        "id": "57a8fddaad5647ec8e5268ae84b24cee",
+        "name": "super-ego",
+        "subdomain": "super-ego",
+        "is_active": 1,
+        "created_at": "2025-11-28T08:22:27.554139",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "giftronick@gmail.com",
+        "phone_number": "0727006288",
+        "mpesa_business_shortcode": "",
+        "mpesa_account_number": "",
+        "address": "",
+        "business_registration": "",
+        "description": "",
+        "owner_email": "",
+        "owner_name": "Gift Ronick",
+        "store_logo": ""
+      },
+      {
+        "id": "7d6b2912dd5c44859ca03c2c3f64f6da",
+        "name": "Techstore",
+        "subdomain": "techstore",
+        "is_active": 0,
+        "created_at": "2025-12-09T15:36:55.178866",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "japhethmasinde7@gmail.com",
+        "phone_number": "0718364879",
+        "mpesa_business_shortcode": "0718364879",
+        "mpesa_account_number": "0718364879",
+        "address": "Kakamega",
+        "business_registration": "",
+        "description": "Electronics",
+        "owner_email": "japhethmasinde7@gmail.com",
+        "owner_name": "Jeff Masinde",
+        "store_logo": ""
+      },
+      {
+        "id": "b5fd43fe1a4c4ee2b22a53ed9eb75ab4",
+        "name": "Fashion Store",
+        "subdomain": "fashion",
+        "is_active": 0,
+        "created_at": "2025-12-11T09:28:48.558657",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "triteenangel@gmail.com",
+        "phone_number": "0723685140",
+        "mpesa_business_shortcode": "0723685140",
+        "mpesa_account_number": "0723685140",
+        "address": "Nandi",
+        "business_registration": "",
+        "description": "Trendy clothes",
+        "owner_email": "triteenangel@gmail.com",
+        "owner_name": "Triteen  Angel",
+        "store_logo": ""
+      },
+      {
+        "id": "ba1d17d94b4b46338d1e566b723aac94",
+        "name": "Baddies",
+        "subdomain": "Baddies",
+        "is_active": 1,
+        "created_at": "2025-11-28T10:23:25.127800",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "mwanziagrace123@gmail.com",
+        "phone_number": "0708283869",
+        "mpesa_business_shortcode": "",
+        "mpesa_account_number": "",
+        "address": "",
+        "business_registration": "",
+        "description": "",
+        "owner_email": "",
+        "owner_name": "Grace Mwanzia",
+        "store_logo": ""
+      },
+      {
+        "id": "df766de078ed4ec6b538375a0bab7ce9",
+        "name": "Jenty",
+        "subdomain": "jenty",
+        "is_active": 1,
+        "created_at": "2025-12-08T06:21:43.165355",
+        "subscription_tier": "basic",
+        "subscription_status": "pending",
+        "email": "etenyijenti@gmail.com",
+        "phone_number": "0729543384",
+        "mpesa_business_shortcode": "0729543384",
+        "mpesa_account_number": "0729543384",
+        "address": "Kakamega",
+        "business_registration": "",
+        "description": "Braiding,manicure,pedicure",
+        "owner_email": "etenyijenti@gmail.com",
+        "owner_name": "Jenty  Etenyi",
+        "store_logo": ""
+      }
+    ]
+  },
+  "tenants_storesettings": {
+    "columns": [
+      "id",
+      "description",
+      "email",
+      "phone",
+      "address",
+      "website",
+      "facebook",
+      "instagram",
+      "twitter",
+      "mpesa_consumer_key",
+      "mpesa_consumer_secret",
+      "mpesa_passkey",
+      "mpesa_environment",
+      "shipping_enabled",
+      "free_shipping_threshold",
+      "shipping_rate",
+      "processing_time",
+      "theme_color",
+      "logo",
+      "store_layout",
+      "email_notifications",
+      "order_notifications",
+      "low_stock_alerts",
+      "customer_emails",
+      "newsletter_subscription",
+      "notification_email",
+      "updated_at",
+      "store_id"
+    ],
+    "data": [
+      {
+        "id": 1,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-11-24T20:54:36.532662",
+        "store_id": "03d780e9a34b41a99a028c3ecb3dce13"
+      },
+      {
+        "id": 2,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-11-25T19:58:07.314519",
+        "store_id": "2beed9b6b66c423b9e4f4f1691cf5275"
+      },
+      {
+        "id": 3,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-11-28T08:52:37.329251",
+        "store_id": "57a8fddaad5647ec8e5268ae84b24cee"
+      },
+      {
+        "id": 4,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-11-28T10:12:00.915705",
+        "store_id": "02042f69d94a445292f83fe3ff5835a1"
+      },
+      {
+        "id": 5,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-11-28T11:20:44.253372",
+        "store_id": "ba1d17d94b4b46338d1e566b723aac94"
+      },
+      {
+        "id": 6,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-01T19:51:53.642665",
+        "store_id": "280218d7dc16421cb3948b71adac7d4f"
+      },
+      {
+        "id": 7,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-05T21:13:15.025315",
+        "store_id": "2cc01223d9cd4418ab6730cb81952826"
+      },
+      {
+        "id": 8,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-09T15:31:56.430325",
+        "store_id": "df766de078ed4ec6b538375a0bab7ce9"
+      },
+      {
+        "id": 9,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-11T07:34:54.517061",
+        "store_id": "7d6b2912dd5c44859ca03c2c3f64f6da"
+      },
+      {
+        "id": 10,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-11T09:15:06.713984",
+        "store_id": "2976208fb0c8422f8bafbd9deb868fd4"
+      },
+      {
+        "id": 11,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-11T09:29:42.691512",
+        "store_id": "b5fd43fe1a4c4ee2b22a53ed9eb75ab4"
+      },
+      {
+        "id": 12,
+        "description": "",
+        "email": "",
+        "phone": "",
+        "address": "",
+        "website": "",
+        "facebook": "",
+        "instagram": "",
+        "twitter": "",
+        "mpesa_consumer_key": "",
+        "mpesa_consumer_secret": "",
+        "mpesa_passkey": "",
+        "mpesa_environment": "sandbox",
+        "shipping_enabled": 1,
+        "free_shipping_threshold": null,
+        "shipping_rate": null,
+        "processing_time": "1-3",
+        "theme_color": "#3498db",
+        "logo": "",
+        "store_layout": "standard",
+        "email_notifications": 1,
+        "order_notifications": 1,
+        "low_stock_alerts": 1,
+        "customer_emails": 1,
+        "newsletter_subscription": 0,
+        "notification_email": "",
+        "updated_at": "2025-12-17T08:43:25.524764",
+        "store_id": "1fa03175f42b438fa56943621d1c8ef4"
+      }
+    ]
+  },
+  "users": {
+    "columns": [
+      "password",
+      "last_login",
+      "is_superuser",
+      "username",
+      "first_name",
+      "last_name",
+      "email",
+      "is_staff",
+      "is_active",
+      "date_joined",
+      "id",
+      "phone_number",
+      "tenant_id",
+      "is_vendor_admin",
+      "is_vendor_customer",
+      "is_vendor_staff"
+    ],
+    "data": [
+      {
+        "password": "pbkdf2_sha256$1000000$b7HGzrh8SMrjKe35aiR7Ra$THUzYFGyOHI2gUf2Kn0wwdkJWi2G1ZzNB6Bexj69b0s=",
+        "last_login": "2025-12-17T08:43:23.744577",
+        "is_superuser": 0,
+        "username": "Laurashavia@gmail.com",
+        "first_name": "Laura",
+        "last_name": "Shavia",
+        "email": "Laurashavia@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-17T08:42:35.902581",
+        "id": "0d54e33243a044479a6f2895912a9053",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 1,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$t8XXetT4CrwPYo5keGkU6Z$Wiez2xcSKrmH1PtHtHDfqebVrM1qo+xr0TFtC0so3ug=",
+        "last_login": "2025-12-13T21:47:33.257085",
+        "is_superuser": 1,
+        "username": "Zainab",
+        "first_name": "",
+        "last_name": "",
+        "email": "zainabsaners@gmail.com",
+        "is_staff": 1,
+        "is_active": 1,
+        "date_joined": "2025-11-18T11:04:12.625183",
+        "id": "0fe1483480f84ad29e2f744817ab9426",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$RCYsCvobPHkf0ZCy25wjjs$8B5BiGlTBVbFPpjArnewXCae08GnKb3w0MWU4k92KWs=",
+        "last_login": "2025-12-01T19:51:52.167290",
+        "is_superuser": 0,
+        "username": "zainabsaners@gmail.com",
+        "first_name": "Zainab",
+        "last_name": "Saners",
+        "email": "zainabsaners@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-01T19:51:18.424269",
+        "id": "1105baeee6fa4fa8a95849907a2d3437",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$9ehblH1gLoRqFlnBXhLbFY$68Gc/M7tQacrgp7WeP99AAYooIe/CwBkaaxlzz6mT2o=",
+        "last_login": "2025-11-23T21:26:51.458082",
+        "is_superuser": 0,
+        "username": "testuser3",
+        "first_name": "Test",
+        "last_name": "User",
+        "email": "test3@example.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-11-23T21:26:45.932612",
+        "id": "275e5c843b91436e811be340e53afa58",
+        "phone_number": "",
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$djkK9dPRE5sYem1qTdeY9K$hTt/Vpp+buAbZQ2wzQH0aUv6mwn0JBeJ8R4mc5B7JbM=",
+        "last_login": "2025-11-24T21:01:52.815330",
+        "is_superuser": 0,
+        "username": "simpleuser123",
+        "first_name": "Simple",
+        "last_name": "User",
+        "email": "simpleuser123@example.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-11-24T20:43:58.189869",
+        "id": "70808dcfe22f462ca7efd27a2d3bcb9c",
+        "phone_number": "0711000000",
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$iRpiEwCLbVVlCW24XoPJUj$1w4C2WOkq48BBAzml/DCyeT++Ldpi2ay/C3e54B8gfg=",
+        "last_login": null,
+        "is_superuser": 0,
+        "username": "Nester",
+        "first_name": "Nester",
+        "last_name": "nena",
+        "email": "nesternena@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-01T19:44:50.323393",
+        "id": "7563f65888dd47079c8b5cbc54229e7d",
+        "phone_number": "0792216252",
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$faDpWwDBrq6g1hL7W3iq2F$1husiFoDaH7cTKAaifz1QJcjBelWjzFVpn9uECGXBec=",
+        "last_login": null,
+        "is_superuser": 0,
+        "username": "etenyijenti@gmail.com",
+        "first_name": "Jenty",
+        "last_name": " Etenyi",
+        "email": "etenyijenti@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-08T06:21:43.190005",
+        "id": "7cee4016b17b4521bf28db33f0d7e952",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$nVqSPw0sG4MhtVf4JSlP5B$0YXkTOWQqJ4EEZ9jdLIm4Z92ZCMqJT6Og9ogmDB7jC4=",
+        "last_login": "2025-12-11T09:08:19.338320",
+        "is_superuser": 0,
+        "username": "japhethmasinde7@gmail.com",
+        "first_name": "Jeff",
+        "last_name": "Masinde",
+        "email": "japhethmasinde7@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-09T15:36:55.218735",
+        "id": "8b21270dc36841a99a6e9b87dddc87af",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$HrbsOSfwxl4lIijYDdyuHh$HPiv6a9a+tOHapQFicgZpTOxrBDnn8N149lwcrlpVAg=",
+        "last_login": "2025-12-11T09:29:41.188328",
+        "is_superuser": 0,
+        "username": "triteenangel@gmail.com",
+        "first_name": "Triteen",
+        "last_name": " Angel",
+        "email": "triteenangel@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-11T09:28:48.582883",
+        "id": "b3417fe281f74eef9461fbbe2d1e8e7d",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$0J182WdrnwEP0gu6quFpIB$a/GQe3pjUV9RuSy3gY5BvCQecjQBQcBPAK/W9gYeHR4=",
+        "last_login": null,
+        "is_superuser": 0,
+        "username": "triniquezainab@gmail.com",
+        "first_name": "Zainab",
+        "last_name": "saners",
+        "email": "triniquezainab@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-05T20:20:51.089017",
+        "id": "ca34dc9f238146f58dd2b0b56ab6aa28",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      },
+      {
+        "password": "pbkdf2_sha256$1000000$WdU8cXoWEd7Dj9h3ydjLea$bfAEncCcm4y+Yms+fyijkX4LH/ERNxPTfrip5KWgg6M=",
+        "last_login": "2025-12-11T09:15:05.467076",
+        "is_superuser": 0,
+        "username": "bettyaod@gmail.com",
+        "first_name": "Betty",
+        "last_name": "pink",
+        "email": "bettyaod@gmail.com",
+        "is_staff": 0,
+        "is_active": 1,
+        "date_joined": "2025-12-11T09:14:21.169723",
+        "id": "dcaa7858a18a443b9204a9433d64baa6",
+        "phone_number": null,
+        "tenant_id": null,
+        "is_vendor_admin": 0,
+        "is_vendor_customer": 0,
+        "is_vendor_staff": 0
+      }
+    ]
+  },
+  "users_groups": {
+    "columns": [
+      "id",
+      "customuser_id",
+      "group_id"
+    ],
+    "data": []
+  },
+  "users_user_permissions": {
+    "columns": [
+      "id",
+      "customuser_id",
+      "permission_id"
+    ],
+    "data": []
+  }
+}
