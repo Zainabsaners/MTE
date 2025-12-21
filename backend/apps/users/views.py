@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes, api_view
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -26,7 +27,26 @@ def csrf_token_view(request):
         samesite='None',
         httponly=False  # Must be False for JavaScript to read
     )
+    origin = request.headers.get('Origin')
+    if origin in [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173", 
+        "https://ecommerce-frontend-nine-lemon.vercel.app"
+    ]:
+        response['Access-Control-Allow-Origin'] = origin
+        response['Access-Control-Allow-Credentials'] = 'true'
+        response['Access-Control-Allow-Headers'] = 'Content-Type, X-CSRFToken, Authorization'
     return response
+# In any views.py - for debugging
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def debug_headers(request):
+    """Debug endpoint to see all headers"""
+    return JsonResponse({
+        'request_headers': dict(request.headers),
+        'cors_enabled': True,
+        'test': 'CORS debug endpoint'
+    })
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
     permission_classes = [permissions.AllowAny]
