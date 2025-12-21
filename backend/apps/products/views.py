@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from apps.tenants.models import Tenant
 from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer, ProductCreateSerializer
+from .serializers import CategorySerializer, ProductSerializer, ProductCreateSerializer, ProductUpdateSerializer
 
 class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
@@ -39,8 +39,10 @@ class ProductViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status', 'Category', 'is_featured']
     
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in 'create':
             return ProductCreateSerializer
+        elif self.action in ['update', 'partial_update']:
+            return ProductUpdateSerializer
         return ProductSerializer
     
     def get_queryset(self):

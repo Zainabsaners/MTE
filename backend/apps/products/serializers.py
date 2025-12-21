@@ -77,3 +77,30 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             if Product.objects.filter(tenant=request.tenant, sku=value).exists():
                 raise serializers.ValidationError("A product with this SKU already exists in your store.")
         return value
+
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+        read_only_fields = ['id', 'sku', 'barcode', 'created_at', 'updated_at']
+    
+    def update(self, instance, validated_data):
+        image_url = validated_data.pop('image', None)
+        
+        # Update other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        # Handle image update
+        if image_url and isinstance(image_url, str):
+            try:
+                # For CloudinaryField, assign the URL directly
+                instance.image = image_url
+                print(f"✅ Updated product image: {instance.image}")
+            except Exception as e:
+                print(f"⚠️ Failed to update image: {e}")
+                import traceback
+                traceback.print_exc()
+        
+        instance.save()
+        return instance
