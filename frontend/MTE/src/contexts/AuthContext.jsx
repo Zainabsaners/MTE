@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       console.log('🔄 Setting up CSRF token...');
       
       // Make a simple GET request to get CSRF cookie
-      const response = await axios.get('https://ecommerce-backend-xz2q.onrender.com/api/products/', {
+      const response = await axios.get('https://ecommerce-backend-xz2q.onrender.com/api/users/csrf/', {
         withCredentials: true,
         headers: {
           'Accept': 'application/json'
@@ -34,6 +34,10 @@ export const AuthProvider = ({ children }) => {
       });
       
       console.log('✅ CSRF setup response status:', response.status);
+      console.log('✅ CSRF response data:', response.data);
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       return getCSRFToken();
     } catch (error) {
       console.warn('⚠️ CSRF setup may have failed:', error.message);
@@ -67,13 +71,21 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔄 Step 1: Setting up CSRF for login...');
 
-      // First, get CSRF token by making a GET request
-      const csrfToken = await setupCSRF();
-      console.log('🔑 CSRF Token obtained:', csrfToken ? 'Yes' : 'No');
+      await setupCSRF();
 
-       // Get current CSRF token from cookies
-      const currentCsrfToken = getCSRFToken();
-      console.log('🍪 Current CSRF from cookies:', currentCsrfToken);
+      // First, get CSRF token by making a GET request
+      const csrfToken = getCSRFToken();
+      console.log('🔑 CSRF Token obtained:', csrfToken ? 'Yes' : 'No');
+      console.log('🍪 Current CSRF from cookies:', csrfToken);
+
+      if (!csrfToken) {
+      return {
+        success: false,
+        error: 'Failed to get CSRF token. Please refresh the page.'
+      };
+    }
+
+
       
       console.log('🔄 Step 2: Attempting login...');
 
@@ -88,7 +100,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-CSRFToken': currentCsrfToken || csrfToken
+            'X-CSRFToken': csrfToken
           }
         }
       );
