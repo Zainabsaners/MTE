@@ -6,7 +6,6 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.views import APIView
 from django.utils.decorators import method_decorator
-from django.middleware.csrf import _get_new_csrf_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import authenticate, login, logout
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,8 +17,6 @@ import json
 def csrf_token_view(request):
     """Get CSRF token for frontend"""
     token = get_token(request)
-    if not token:
-        token = _get_new_csrf_token()
     response = JsonResponse({'csrfToken': token, 'message': 'CSRF token set'})
     response.set_cookie(
         'csrftoken',
