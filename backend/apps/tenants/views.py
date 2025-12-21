@@ -38,16 +38,43 @@ def deactivate(self, request, pk=None):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def tenant_by_subdomain(request, subdomain):
+    print(f"🔍 tenant_by_subdomain called with subdomain: '{subdomain}'")
+    
+    subdomain = str(subdomain).strip().lower().rstrip('/')
+    print(f"🔍 Looking for tenant with cleaned subdomain: '{subdomain}'")
     try:
-        tenant = Tenant.objects.get(subdomain=subdomain)
+        tenant = Tenant.objects.get(subdomain__iexact=subdomain)
         serializer = TenantSerializer(tenant)
-        return Response(serializer.data)
+        print(f"✅ Found tenant: {tenant.name}")
+        return Response({
+            'success': True,
+            'tenant': serializer.data,
+            'api_url': request.build_absolute_uri(),
+            'store_url': f"/api/tenants/{subdomain}/",
+        })
     except Tenant.DoesNotExist:
-        return Response(
-            {'error': f'Tenant with subdomain "{subdomain}" not found'}, 
-            status=status.HTTP_404_NOT_FOUND
-        )
+        print(f"❌ Tenant with subdomain '{subdomain}' not found")
+        all_subdomains = list(Tenant.objects.values_list('subdomain', flat=True))
+        available = list(Tenant.objects.exclude(subdomain__isnull=True)
+                        .exclude(subdomain='')
+                        .values_list('subdomain', flat=True))
+        print(f"📋 Available subdomains: {all_subdomains}")
+        return Response({
+            'success': False,
+            'error': f'Store "{subdomain}" not found',
+            'available_stores': available,
+            'hint': 'Try one of these subdomains or visit /api/tenants/ for all stores'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"💥 Error retrieving tenant by subdomain: {e}")
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            
+        
 
 
 @api_view(['POST'])

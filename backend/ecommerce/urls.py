@@ -6,8 +6,25 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.http import JsonResponse
+
+def api_root(request):
+    return JsonResponse({
+        'message': 'Ecommerce API',
+        'endpoints': {
+            'stores': '/api/tenants/',
+            'store_by_subdomain': '/api/tenants/{subdomain}/',
+            'my_store': '/api/tenants/my-store/',
+            'users': '/api/users/',
+            'products': '/api/products/',
+        }
+    })
+def health_check(request):
+    return JsonResponse({'status': 'healthy'})
 
 urlpatterns = [
+    path('', api_root, name='api-root'),
+    path('health/', health_check, name='health-check'),
     # JWT Authentication
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

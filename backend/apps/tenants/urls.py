@@ -10,6 +10,8 @@ router.register(r'tenants', views.TenantViewSet, basename='tenant')
 urlpatterns = [
     path('', include(router.urls)),
     # PUT FUNCTION-BASED VIEWS FIRST (before router)
+    path('<str:subdomain>/', views.tenant_by_subdomain, name='tenant-by-subdomain-direct'),
+    path('', include(router.urls)),
     path('by-subdomain/<str:subdomain>/', views.tenant_by_subdomain, name='tenant-by-subdomain'),
     path('tenant-register/', views.register_tenant, name='register-tenant'),
     path('tenant-status/<uuid:tenant_id>/', views.get_tenant_status, name='tenant-status'),
