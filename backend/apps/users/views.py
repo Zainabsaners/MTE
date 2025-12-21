@@ -12,6 +12,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import customUser
 from .serializers import UserSerializer, UserRegistrationSerializer, UserLoginSerializer
 
+
+def csrf_token_view(request):
+    """Get CSRF token for frontend"""
+    token = get_token(request)
+    response = JsonResponse({'csrfToken': token})
+    response.set_cookie(
+        'csrftoken',
+        token,
+        max_age=3600 * 24 * 7,  # 7 days
+        secure=True,
+        samesite='None',
+        httponly=False  # Must be False for JavaScript to read
+    )
+    return response
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
     permission_classes = [permissions.AllowAny]
