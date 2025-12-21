@@ -223,6 +223,7 @@ CSRF_COOKIE_SAMESITE = 'None'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CSRF_COOKIE_HTTPONLY = False 
 CORS_ALLOW_HEADERS = [
     'content-type',
     'x-csrftoken',
@@ -232,6 +233,7 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-requested-with',
 ]
+
 
 # Jazzmin Settings
 JAZZMIN_SETTINGS = {
