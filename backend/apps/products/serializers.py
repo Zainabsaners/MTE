@@ -53,21 +53,20 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         image_url = validated_data.pop('image', None)
         product = Product.objects.create(**validated_data)
-        if image_url and isinstance(image_url, str):
-            try:
+        if image_url:
+            if isinstance(image_url, str) and image_url.startswith('http'):
                 import re
                 match = re.search(r'/upload/(?:v\d+/)?([^/.]+)', image_url)
 
                 if match:
                     public_id = match.group(1)
                     print(f"✅ Extracted Cloudinary public_id: {public_id}")
-                    product.image = public_id
-                    product.save()
-                    print(f"✅ Image set successfully: {product.image}")
-            except Exception as e:
-                print(f"⚠️ Failed to process Cloudinary URL: {e}")
-                import traceback
-                traceback.print_exc()
+                    product.image = {'public_id': public_id}
+            else:
+                product.image = image_url
+            product.save()
+            print(f"✅ Image set successfully: {product.image}")
+            
             
         return product
 
